@@ -23,7 +23,7 @@ export default class HomeScreen extends React.Component {
     render() {
         const {navigate} = this.props.navigation;
         return (
-            <HomeLocal/>
+            <HomeLocal />
         );
     }
 };
@@ -184,6 +184,7 @@ class HomeBoxScreen extends React.Component {
     }
 }
 
+const navigateAction0 = NavigationActions.navigate({routeName: 'HomeBox'});
 const navigateAction1 = NavigationActions.navigate({routeName: 'HomeLocal'});
 const navigateAction2 = NavigationActions.navigate({routeName: 'HomeSelect'});
 const navigateAction3 = NavigationActions.navigate({routeName: 'HomeAuth'});
