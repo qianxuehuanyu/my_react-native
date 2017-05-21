@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {
-    Text,View,StyleSheet,Image,TouchableNativeFeedback,Button
+    Text,View,StyleSheet,Image,TouchableNativeFeedback,Button,TouchableHighlight
 } from 'react-native';
 import {SimpleApp} from '../AgainBody/navigator';
 import {boxstyles} from "../Sheetstyle/cssMain";
@@ -19,7 +19,7 @@ export default class Main extends React.Component{
         return (
             <View style={{flex:1,position:'relative'}}>
                 <View style={{flex:1,position:'relative'}}>
-                    <SimpleApp style={{flex:1}} />
+                    <SimpleApp style={{flex:1}} screenProps={this.props.navigation} />
                 </View>
 
                 <View style={{position:'absolute',bottom:0,width:70,height:50,alignSelf:'center',paddingLeft:10,paddingRight:10,backgroundColor:'rgba(0,0,0,0)'}}>

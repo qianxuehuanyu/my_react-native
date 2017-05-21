@@ -3,27 +3,27 @@
  */
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,
+    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,DeviceEventEmitter
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from "../Sheetstyle/cssMain"
 import PubSub from 'pubsub-js'
 import HomeContentScreen from './HomeContent'
-import HomeLocalScreen from './HomeLocal'
-import HomeSelectScreen from './HomeSelect'
-import HomeAuthScreen from './HomeAuth'
-import HomeKindScreen from './HomeKind'
+import Global from '../AgainBody/data'
+import City from '../AgainBody/citydata'
 
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         header:null
     });
-    render() {
+    componentDidMount () {
+    }
+        render() {
         const {navigate} = this.props.navigation;
         return (
-            <HomeLocal />
+            <HomeBoxScreen screenProps={this.props.screenProps} />
         );
     }
 };
@@ -45,11 +45,12 @@ class HomeBoxScreen extends React.Component {
             ['最热',require('../../image/thehot.png')],
             ['最新',require('../../image/thenew.png')],
             ['列表',require('../../image/selectlist.png')],0],
-            btnListKind:[{display:'none'},{display:'flex'}]
+            btnListKind:[{display:'none'},{display:'flex'}],
+            dataLocal:''
         };
     }
     componentDidMount () {
-        this.select = PubSub.subscribe('products', function (topic, product) {
+        this.select = PubSub.subscribe('selectkind', function (topic, product) {
             this.setState((prevState, props) => {
                 let aaa=prevState;
                 if(product.length==4){
@@ -61,6 +62,12 @@ class HomeBoxScreen extends React.Component {
                 return aaa;
             });
         }.bind(this));
+        setInterval(()=>{
+            let aaa=this.state.dataLocal;
+            if(aaa!=Global.local){
+                this.setState({dataLocal:Global.local});
+            }
+        },500);
     };
     componentWillUnmount () {
         PubSub.unsubscribe(this.select);
@@ -94,26 +101,33 @@ class HomeBoxScreen extends React.Component {
         });
     };
     render(){
+        let ddd=this.state.dataLocal;let Lddd;
+        const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal',params:{city:City.theCity,local:ddd}});
+        if(ddd.length>13){
+            Lddd=ddd.slice(0,8);
+        }else{
+            Lddd=ddd;
+        }
         return(
             <View style={{flex:1}}>
                 <View style={{height:height,position:'relative',justifyContent:'center'}}>
                     <Image style={styles.headerimg} source={require('../../image/shouye_header.png')}/>
                     <View style={styles.headertop}>
                         <TouchableNativeFeedback onPress={()=>{
-                this.props.navigation.dispatch(navigateAction1);}}>
+                this.props.screenProps.dispatch(navigateAction1);}}>
                             <View style={styles.headerLocal}>
                                 <Image source={require('../../image/local.png')} style={styles.headericonLocal}/>
-                                <Text style={styles.headerLT}>{ddd}...</Text>
+                                <Text style={styles.headerLT}>{Lddd}...</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
-                this.props.navigation.dispatch(navigateAction2);}}>
+                this.props.screenProps.dispatch(navigateAction2);}}>
                             <View style={[styles.headerLocalRight,{right:35}]}>
                                 <Image source={require('../../image/select.png')} style={styles.headericon}/>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
-                this.props.navigation.dispatch(navigateAction3);}}>
+                this.props.screenProps.dispatch(navigateAction3);}}>
                             <View style={styles.headerLocalRight}>
                                 <Image source={require('../../image/auth.png')} style={styles.headericon}/>
                             </View>
@@ -165,7 +179,7 @@ class HomeBoxScreen extends React.Component {
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback onPress={()=>{
-                this.props.navigation.dispatch(navigateAction4);}}>
+                this.props.screenProps.dispatch(navigateAction4);}}>
                         <View style={styles.headerbtns}>
                             <View>
                                 <Image style={[styles.btnlistimg]} source={require('../../image/addkind.png')}/>
@@ -177,33 +191,20 @@ class HomeBoxScreen extends React.Component {
                     </View>
                 </View>
                 <View style={{flex:1}}>
-                    <HomeContentScreen/>
+                    <HomeContentScreen screenProps={this.props.screenProps}/>
                 </View>
             </View>
         )
     }
 }
 
-const navigateAction0 = NavigationActions.navigate({routeName: 'HomeBox'});
-const navigateAction1 = NavigationActions.navigate({routeName: 'HomeLocal'});
-const navigateAction2 = NavigationActions.navigate({routeName: 'HomeSelect'});
-const navigateAction3 = NavigationActions.navigate({routeName: 'HomeAuth'});
-const navigateAction4 = NavigationActions.navigate({routeName: 'HomeKind'});
-
-const HomeLocal=StackNavigator({
-    HomeBox:{screen:HomeBoxScreen},
-    HomeLocal:{screen:HomeLocalScreen},
-    HomeSelect: {screen:HomeSelectScreen},
-    HomeAuth: {screen:HomeAuthScreen},
-    HomeKind:{screen:HomeKindScreen}
-});
+const navigateAction2 = NavigationActions.navigate({routeName: 'pHomeSelect'});
+const navigateAction3 = NavigationActions.navigate({routeName: 'pHomeAuth'});
+const navigateAction4 = NavigationActions.navigate({routeName: 'pHomeKind'});
 
 let width=Dimensions.get('window').width;
 let height=width/639*256;
-let ddd="滨江区长河路351号dfasdf";
-if(ddd.length>13){
-    ddd=ddd.slice(0,8)
-}
+
 let btnlist=[['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png')],
     ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
     ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png')],
