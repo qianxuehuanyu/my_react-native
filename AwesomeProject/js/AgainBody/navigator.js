@@ -1,7 +1,6 @@
 /**
  * Created by admin on 2017/5/5.
  */
-
 import React from 'react';
 import {
     Image,Text,View

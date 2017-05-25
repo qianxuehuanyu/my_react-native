@@ -8,6 +8,11 @@ import {
 import { StackNavigator } from 'react-navigation';
 
 class MoreScreen extends React.Component{
+    static navigationOptions = ({ navigation }) => ({
+        header:null,
+        tabBarLabel:null
+    });
+    tabBarLabel
     render(){
         return(
             <View>

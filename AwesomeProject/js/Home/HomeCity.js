@@ -1,21 +1,15 @@
 /**
- * Created by admin on 2017/5/16.
- */
-/**
- * Created by admin on 2017/5/12.
- */
-/**
  * Created by admin on 2017/5/12.
  */
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,TextInput,ListView
+    Text,Button,View,Image,TouchableNativeFeedback,ScrollView,TextInput,ListView
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from '../Sheetstyle/cssMain'
-import City from '../AgainBody/citydata'
+import {City,dataCitystorage} from '../AgainBody/dataCity'
 import PubSub from 'pubsub-js'
-
+let listV=require('../AgainBody/area_tb_da.json');
 let keywordValue=[
     {keyword:'A',color:'#777',borderColor:'#aaa'},
     {keyword:'B',color:'#777',borderColor:'#aaa'},
@@ -40,6 +34,7 @@ let keywordValue=[
     {keyword:'Y',color:'#777',borderColor:'#aaa'},
     {keyword:'Z',color:'#777',borderColor:'#aaa'},
 ];
+const theKeyWordList=listV.citys;
 
 export default class LocalselectScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -124,9 +119,9 @@ class KeywordList extends React.Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        for(let ll=0;ll<City.keywordlist.length;ll++){
-            if(City.keywordlist[ll].display==1){
-                datadata.push(City.keywordlist[ll]);
+        for(let ll=0;ll<theKeyWordList.length;ll++){
+            if(theKeyWordList[ll].display==1){
+                datadata.push(theKeyWordList[ll]);
             }
         }
         this.state = {
@@ -137,9 +132,9 @@ class KeywordList extends React.Component {
         this.SKeyval = PubSub.subscribe('KKeyword', function (topic, product) {
             datadata=[];
                 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                for(let ll=0;ll<City.keywordlist.length;ll++){
-                    if(City.keywordlist[ll].keyword==product){
-                        datadata.push(City.keywordlist[ll]);
+                for(let ll=0;ll<theKeyWordList.length;ll++){
+                    if(theKeyWordList[ll].keyword==product){
+                        datadata.push(theKeyWordList[ll]);
                     }
                 }
                 this.setState({dataSource:ds.cloneWithRows(datadata)})
@@ -148,10 +143,10 @@ class KeywordList extends React.Component {
         this.FKeyval = PubSub.subscribe('FKeyword', function (topic, product) {
                 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
                 datadata=[];
-                for(var i=0;i<City.keywordlist.length;i++) {
-                    let _key=City.keywordlist[i].city;
+                for(var i=0;i<theKeyWordList.length;i++) {
+                    let _key=theKeyWordList[i].city;
                     if(_key.indexOf(product)>-1){
-                        datadata.push(City.keywordlist[i])
+                        datadata.push(theKeyWordList[i])
                     }
                 }
                 this.setState({dataSource:ds.cloneWithRows(datadata)})
@@ -173,6 +168,10 @@ class KeywordList extends React.Component {
             };
             this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=rowData.city;
+                dataCitystorage.save({
+                        key: 'theCity',
+                        data:City
+                        });
             }
             }>
                 <View style={{height:35,backgroundColor:'#fff',paddingLeft:10}}>
@@ -190,6 +189,10 @@ class KeywordList extends React.Component {
             ()=>{
                 this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[0];
+                dataCitystorage.save({
+                        key: 'theCity',
+                        data:City
+                        });
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[0]==undefined?'none':'flex'}}>
@@ -200,6 +203,10 @@ class KeywordList extends React.Component {
             ()=>{
                 this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[1];
+                dataCitystorage.save({
+                        key: 'theCity',
+                        data:City
+                        });
 
             }
             }>
@@ -211,6 +218,10 @@ class KeywordList extends React.Component {
             ()=>{
                 this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[2];
+                dataCitystorage.save({
+                        key: 'theCity',
+                        data:City
+                        });
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[2]==undefined?'none':'flex'}}>
@@ -221,6 +232,10 @@ class KeywordList extends React.Component {
             ()=>{
                 this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[3];
+                dataCitystorage.save({
+                        key: 'theCity',
+                        data:City
+                        });
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[3]==undefined?'none':'flex'}}>
@@ -258,11 +273,11 @@ class Keywordbtn extends React.Component {
                 keywordValue[i].borderColor='#aaa';
             }
         }
-        for(var i=0;i<City.keywordlist.length;i++) {
-            if(City.keywordlist[i].keyword==val){
-                City.keywordlist[i].display='1';
+        for(var i=0;i<theKeyWordList.length;i++) {
+            if(theKeyWordList[i].keyword==val){
+                theKeyWordList[i].display='1';
             }else{
-                City.keywordlist[i].display='0';
+                theKeyWordList[i].display='0';
             }
         }
         PubSub.publish('cityKeyword', val);
@@ -282,7 +297,3 @@ class Keywordbtn extends React.Component {
     }
 }
 const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal',params:{city:City.theCity,local:''}});
-
-const styles=StyleSheet.create({
-
-});

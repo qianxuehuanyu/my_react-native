@@ -10,8 +10,8 @@ import { NavigationActions } from 'react-navigation'
 import {boxstyles} from "../Sheetstyle/cssMain"
 import PubSub from 'pubsub-js'
 import HomeContentScreen from './HomeContent'
-import Global from '../AgainBody/data'
-import City from '../AgainBody/citydata'
+import {Global,datastorage} from '../AgainBody/data'
+import {City,dataCitystorage} from '../AgainBody/dataCity'
 
 
 export default class HomeScreen extends React.Component {
@@ -20,7 +20,7 @@ export default class HomeScreen extends React.Component {
     });
     componentDidMount () {
     }
-        render() {
+    render() {
         const {navigate} = this.props.navigation;
         return (
             <HomeBoxScreen screenProps={this.props.screenProps} />
@@ -36,15 +36,15 @@ class HomeBoxScreen extends React.Component {
         super(props);
         this.state = {
             selectbtns: [
-            ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-            ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-            ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-            ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2]],
+                ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
+                ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
+                ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
+                ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2]],
             sbKind:[
-            ['附近',require('../../image/theclose.png')],
-            ['最热',require('../../image/thehot.png')],
-            ['最新',require('../../image/thenew.png')],
-            ['列表',require('../../image/selectlist.png')],0],
+                ['附近',require('../../image/theclose.png')],
+                ['最热',require('../../image/thehot.png')],
+                ['最新',require('../../image/thenew.png')],
+                ['列表',require('../../image/selectlist.png')],0],
             btnListKind:[{display:'none'},{display:'flex'}],
             dataLocal:''
         };
@@ -127,7 +127,12 @@ class HomeBoxScreen extends React.Component {
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
-                this.props.screenProps.dispatch(navigateAction3);}}>
+                        if(Global.auth.is_auth==0){
+                        this.props.screenProps.dispatch(navigateAction3);
+                        }else{
+                        alert('已认证')
+                        }
+                        }}>
                             <View style={styles.headerLocalRight}>
                                 <Image source={require('../../image/auth.png')} style={styles.headericon}/>
                             </View>
@@ -135,12 +140,12 @@ class HomeBoxScreen extends React.Component {
                     </View>
                     <View style={styles.headerbtnlist}>
                         <TouchableNativeFeedback  onPress={()=>{this.onbtnList();}}>
-                        <View style={styles.headerbtns}>
-                            <View style={this.state.btnListKind[1]}>
-                                <Image style={styles.btnlistimg} source={this.state.sbKind[this.state.sbKind[4]][1]}/>
-                                <Text style={[styles.btnlisttext,{color:'#179EDD',top:4}]}>︾</Text>
+                            <View style={styles.headerbtns}>
+                                <View style={this.state.btnListKind[1]}>
+                                    <Image style={styles.btnlistimg} source={this.state.sbKind[this.state.sbKind[4]][1]}/>
+                                    <Text style={[styles.btnlisttext,{color:'#179EDD',top:4}]}>︾</Text>
+                                </View>
                             </View>
-                        </View>
                         </TouchableNativeFeedback>
                         <View style={[this.state.btnListKind[0],styles.btnlistkind]}>
                             <TouchableNativeFeedback  onPress={()=>{this.onbtnList();this.change_sbKind(0);}}>
@@ -154,38 +159,38 @@ class HomeBoxScreen extends React.Component {
                         </View>
 
                         <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(0);}}>
-                        <View style={styles.headerbtns}>
-                            <Image source={this.state.selectbtns[0][this.state.selectbtns[0][3]]} style={styles.btnlistimg}/>
-                            <Text style={styles.btnlisttext}>{this.state.selectbtns[0][0]}</Text>
-                        </View>
+                            <View style={styles.headerbtns}>
+                                <Image source={this.state.selectbtns[0][this.state.selectbtns[0][3]]} style={styles.btnlistimg}/>
+                                <Text style={styles.btnlisttext}>{this.state.selectbtns[0][0]}</Text>
+                            </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(1);}}>
-                        <View style={styles.headerbtns}>
-                            <Image source={this.state.selectbtns[1][this.state.selectbtns[1][3]]} style={styles.btnlistimg}/>
-                            <Text style={styles.btnlisttext}>{this.state.selectbtns[1][0]}</Text>
-                        </View>
+                            <View style={styles.headerbtns}>
+                                <Image source={this.state.selectbtns[1][this.state.selectbtns[1][3]]} style={styles.btnlistimg}/>
+                                <Text style={styles.btnlisttext}>{this.state.selectbtns[1][0]}</Text>
+                            </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(2);}}>
-                        <View style={styles.headerbtns}>
-                            <Image source={this.state.selectbtns[2][this.state.selectbtns[2][3]]} style={styles.btnlistimg}/>
-                            <Text style={styles.btnlisttext}>{this.state.selectbtns[2][0]}</Text>
-                        </View>
+                            <View style={styles.headerbtns}>
+                                <Image source={this.state.selectbtns[2][this.state.selectbtns[2][3]]} style={styles.btnlistimg}/>
+                                <Text style={styles.btnlisttext}>{this.state.selectbtns[2][0]}</Text>
+                            </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback  onPress={()=>{this.onbtnsPress(3);}}>
-                        <View style={styles.headerbtns}>
-                            <Image source={this.state.selectbtns[3][this.state.selectbtns[3][3]]} style={styles.btnlistimg}/>
-                            <Text style={styles.btnlisttext}>{this.state.selectbtns[3][0]}</Text>
-                        </View>
+                            <View style={styles.headerbtns}>
+                                <Image source={this.state.selectbtns[3][this.state.selectbtns[3][3]]} style={styles.btnlistimg}/>
+                                <Text style={styles.btnlisttext}>{this.state.selectbtns[3][0]}</Text>
+                            </View>
                         </TouchableNativeFeedback>
 
                         <TouchableNativeFeedback onPress={()=>{
                 this.props.screenProps.dispatch(navigateAction4);}}>
-                        <View style={styles.headerbtns}>
-                            <View>
-                                <Image style={[styles.btnlistimg]} source={require('../../image/addkind.png')}/>
-                                <Text style={[styles.btnlisttext]}>添加</Text>
+                            <View style={styles.headerbtns}>
+                                <View>
+                                    <Image style={[styles.btnlistimg]} source={require('../../image/addkind.png')}/>
+                                    <Text style={[styles.btnlisttext]}>添加</Text>
+                                </View>
                             </View>
-                        </View>
                         </TouchableNativeFeedback>
 
                     </View>
@@ -217,7 +222,7 @@ let btnlist=[['品牌设计',require('../../image/KB_logo1.png'),require('../../
 
 const styles=StyleSheet.create({
     headerimg:{
-       width:width,flex:1
+        width:width,flex:1
     },
     headertop:{
         position:'absolute',

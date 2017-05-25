@@ -6,7 +6,6 @@ import {
     ActivityIndicator,TouchableNativeFeedback,
     ListView,
 } from 'react-native';
-
 import {PullList} from 'react-native-pull';
 let long=30;
 export default class HomeContent extends Component {

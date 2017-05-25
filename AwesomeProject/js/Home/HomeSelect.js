@@ -7,23 +7,23 @@ import {
     Text,Button,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,ListView,TextInput
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
-import Global from '../AgainBody/data'
-import SelectionOld from '../AgainBody/dataSave'
+import {Global,datastorage} from '../AgainBody/data'
+import {SelectionOld,dataSelectstorage} from '../AgainBody/dataSelect'
 
-
-
-export default class HomeSelect extends React.Component {
+export default class HomeSelect2 extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         header:null
     });
     constructor(props) {
         super(props);
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             selectKey:'',
-            isSubmit:true,
-            dataSource: ds.cloneWithRows(SelectionOld.selectKey),
+            isSubmit:false,
+            listdata:[],
         }
+    }
+    componentDidMount () {
+        this.setState({listdata:SelectionOld.selectKey})
     }
     _renderRow(rowData){
         return (
@@ -32,12 +32,13 @@ export default class HomeSelect extends React.Component {
             </View>
         )
     }
-
     render(){
-        const {state, setParams} = this.props.navigation;
-        const {changeVal}=state.params;
-        let first=changeVal==undefined?'':changeVal;
-        let fouseon=first==''?false:true;
+        const changeVal=Global.selectKeyword;
+        let first=changeVal;
+        let fouseon=(first==''?false:true);
+        if(fouseon){
+            this.setState({isSubmit:true});
+        }
         let isok=this.state.isSubmit?'#111':'#eee';
         let iddis=SelectionOld.selectKey.length>0?'flex':'none';
         return(
@@ -48,7 +49,12 @@ export default class HomeSelect extends React.Component {
             <View >
                 <View style={styles.selectHeader}>
                     <TouchableNativeFeedback onPress={()=>{
+                    if(Global.selectKeyword==''){
+                    this.props.navigation.dispatch(navigateActionback)
+                    }else{
                     this.props.navigation.dispatch(navigateAction1)
+                    }
+
                     }}>
                         <View style={{height:60,width:60}} >
                             <Image style={{height:40,width:40,marginTop:10}} source={require('../../image/returnIcon.png')}/>
@@ -59,18 +65,35 @@ export default class HomeSelect extends React.Component {
                                underlineColorAndroid="transparent"
                                autoCorrect={false}
                                autoFocus={fouseon}
-                               value={first}
+                               defaultvalue={first}
+                               onSubmitEditing={()=>{
+                                if(this.state.isSubmit){
+                                    Global.selectKeyword=this.state.selectKey;
+                                    datastorage.save({
+                                    key: 'theGlobal',
+                                    data:Global
+                                    });
+                                    this.props.navigation.dispatch(navigateAction2);
+                                }else{
+                                alert("搜索内容不可为空");
+                                }
+                            }}
                                onChangeText={(text) =>{
                                if(text.length==0){
-                               this.setState({isSubmit:false})
+                               this.setState({isSubmit:false});
+                               }else{
+                               this.setState({isSubmit:true});
                                }
                                this.setState({selectKey:text});
-                           }}
+                            }}
                     />
                     <TouchableNativeFeedback onPress={()=>{
                     if(this.state.isSubmit){
                         Global.selectKeyword=this.state.selectKey;
-                        SelectionOld.selectKey.push(this.state.selectKey);
+                        datastorage.save({
+                        key: 'theGlobal',
+                        data:Global
+                        });
                         this.props.navigation.dispatch(navigateAction2);
                     }else{
                     alert("搜索内容不可为空");
@@ -82,21 +105,19 @@ export default class HomeSelect extends React.Component {
                     </TouchableNativeFeedback>
                 </View>
                 <View style={{padding:10,display:iddis}}>
-                <Text>历史记录</Text>
+                <View style={{flexDirection:'row',position:'relative',height:20}}>
+                <Text style={{fontSize:16}}>历史记录</Text>
                     <TouchableNativeFeedback onPress={()=>{
-                    SelectionOld.selectKey=[]
-                    }}
-                    >
-                        <Text>delete</Text>
+                    SelectionOld.selectKey=[];
+                    dataSelectstorage.save({
+                        key: 'theSelectionOld',
+                        data:SelectionOld
+                        });
+                    }}>
+                        <Image source={require('../../image/delete.png')} style={{position:'absolute',height:20,width:20,top:0,right:0}}/>
                     </TouchableNativeFeedback>
-                    <TextBtnlist value={SelectionOld.selectKey}/>
-
-
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this._renderRow.bind(this)}
-                    style={{flexWrap:'wrap'}}
-                />
+                </View>
+                    <TextBtnlistOld screenProps={this.props.navigation} value={this.state.listdata}/>
                 </View>
                 <Text style={{padding:10}}>快速搜索</Text>
                 <View style={{borderTopColor:'#eee',borderTopWidth:1}}>
@@ -104,7 +125,17 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                        </View>
+
+                    </View>
+                </View>
+                <View >
+                    <View style={styles.quickbtn}>
+                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                        <View style={{paddingLeft:15,flex:1}}>
+                            <Text style={{fontSize:20}}>艺术绘画</Text>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -115,7 +146,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -126,7 +157,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -137,7 +168,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -148,7 +179,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -159,7 +190,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
                         </View>
 
                     </View>
@@ -170,7 +201,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.art}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
                         </View>
 
                     </View>
@@ -181,18 +212,7 @@ export default class HomeSelect extends React.Component {
                         <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
                         <View style={{paddingLeft:15,flex:1}}>
                             <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist value={Global.art}/>
+                            <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
                         </View>
 
                     </View>
@@ -213,7 +233,12 @@ class TextBtnlist extends React.Component {
         };
     }
     selectValKeyWord(val){
-
+        Global.selectKeyword=val;
+        datastorage.save({
+            key: 'theGlobal',
+            data:Global
+        });
+        this.props.screenProps.dispatch(navigateAction2);
     }
     render() {
         return (
@@ -235,7 +260,46 @@ class TextBtnlist extends React.Component {
         );
     }
 }
-const navigateAction1 = NavigationActions.back();
+
+class TextBtnlistOld extends React.Component {
+    constructor(props) {
+        super(props);
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.state = {
+            dataSource: ds.cloneWithRows(this.props.value),
+        };
+    }
+    selectValKeyWord(val){
+        Global.selectKeyword=val;
+        datastorage.save({
+            key: 'theGlobal',
+            data:Global
+        });
+        this.props.screenProps.dispatch(navigateAction2);
+    }
+    render() {
+        return (
+            <ListView
+                style={{flex:1}}
+                dataSource={this.state.dataSource}
+                contentContainerStyle={{flexDirection:'row',flexWrap: 'wrap'}}
+                renderRow={(rowData) => {
+                return(
+                <TouchableNativeFeedback onPress={
+                ()=>{
+                this.selectValKeyWord(rowData);
+                }
+                }>
+                <View style={{paddingLeft:5,marginTop:10}}><Text>{rowData}</Text></View>
+                </TouchableNativeFeedback>
+                )
+                }}
+            />
+        );
+    }
+}
+const navigateActionback = NavigationActions.back();
+const navigateAction1 = NavigationActions.navigate({routeName:'Box'});
 const navigateAction2 = NavigationActions.navigate({routeName:'pHomeSelectResult'});
 
 

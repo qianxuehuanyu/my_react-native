@@ -12,7 +12,7 @@ import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from '../Sheetstyle/cssMain'
 import PubSub from 'pubsub-js'
-import Global from '../AgainBody/data'
+import {Global,datastorage} from '../AgainBody/data'
 
 
 export default class HomeLocal extends React.Component {
@@ -137,15 +137,12 @@ class Localindex extends React.Component {
         )
     }
 }
-let aaoldlocal=[{local: "杭州市dfasdfasf", keyword: 'home'},
-    {local: "杭州市dfasdfasf", keyword: 'company'},
-    {local: "杭州市dfasdfasf", keyword: 'null'}];
 class Oldloaclhistroy extends React.Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(aaoldlocal),
+            dataSource: ds.cloneWithRows(Global.aaoldlocal),
         };
     }
     _renderRow(rowData){
@@ -157,6 +154,10 @@ class Oldloaclhistroy extends React.Component {
             ()=>{
             this.props.screenProps.dispatch(navigateAction1);
             Global.local=rowData.local;
+            datastorage.save({
+                        key: 'theGlobal',
+                        data:Global
+                        });
             }
             }>
                 <View style={{height:35,flexDirection:'row',backgroundColor:'#fff',paddingLeft:10,paddingRight:10}}>

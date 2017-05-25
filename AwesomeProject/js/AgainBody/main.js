@@ -10,7 +10,6 @@ import {boxstyles} from "../Sheetstyle/cssMain";
 import PubSub from 'pubsub-js'
 import { NavigationActions } from 'react-navigation'
 
-
 export default class Main extends React.Component{
     static navigationOptions = ({ navigation }) => ({
         header:null

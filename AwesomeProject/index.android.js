@@ -5,8 +5,12 @@ import React from 'react';
 import {
     AppRegistry
 } from 'react-native';
+import {Global,datastorage} from './js/AgainBody/data'
+import {City,dataCitystorage} from './js/AgainBody/dataCity'
+import {SelectionOld,dataSelectstorage} from './js/AgainBody/dataSelect'
 import { StackNavigator } from 'react-navigation';
-import {MoreStack} from './js/Home/More_Button'
+import { NavigationActions } from 'react-navigation'
+import MoreStack from './js/Home/More_Button'
 import FindScreen from './js/Find/FindScreen'
 import ShowScreen from './js/Show/ShowScreen'
 import CloudScreen from './js/Cloud/CloudScreen'
@@ -17,6 +21,15 @@ import HomeSelectResultScreen from './js/Home/HomeSelectResult'
 import HomeAuthScreen from './js/Home/HomeAuth'
 import HomeKindScreen from './js/Home/HomeKind'
 import HomeCityScreen from './js/Home/HomeCity'
+import DesignerScreen from './js/Designer/designer'
+
+class AwesomeProject extends React.Component{
+    render(){
+        return(
+            <App/>
+        )
+    }
+}
 
 const App=StackNavigator({
     Box:{screen:Main},
@@ -28,10 +41,8 @@ const App=StackNavigator({
     pHomeSelect:{screen:HomeSelectScreen},
     pHomeSelectResult:{screen:HomeSelectResultScreen},
     pHomeAuth:{screen:HomeAuthScreen},
+    pDesigner:{screen:DesignerScreen},
     pHomeKind:{screen:HomeKindScreen}
 });
 
-export {MoreStack}
-
-
-AppRegistry.registerComponent('AwesomeProject', () => App);
+AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);
