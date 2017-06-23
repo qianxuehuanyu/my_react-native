@@ -3,23 +3,19 @@
  */
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,DeviceEventEmitter
+    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,DeviceEventEmitter,ActivityIndicator
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from "../Sheetstyle/cssMain"
-import PubSub from 'pubsub-js'
 import HomeContentScreen from './HomeContent'
 import {Global,datastorage} from '../AgainBody/data'
 import {City,dataCitystorage} from '../AgainBody/dataCity'
-
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         header:null
     });
-    componentDidMount () {
-    }
     render() {
         const {navigate} = this.props.navigation;
         return (
@@ -33,58 +29,65 @@ class HomeBoxScreen extends React.Component {
         header:null
     });
     constructor(props) {
+        console.log("props");
         super(props);
         this.state = {
             selectbtns: [
-                ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-                ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-                ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-                ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2]],
+                Global.selectbtns[0],Global.selectbtns[1],Global.selectbtns[2],Global.selectbtns[3]
+            ],
+            data:Global,
             sbKind:[
                 ['附近',require('../../image/theclose.png')],
                 ['最热',require('../../image/thehot.png')],
                 ['最新',require('../../image/thenew.png')],
                 ['列表',require('../../image/selectlist.png')],0],
             btnListKind:[{display:'none'},{display:'flex'}],
-            dataLocal:''
+            dataLocal:Global.local,
+            show:'none'
         };
     }
     componentDidMount () {
-        this.select = PubSub.subscribe('selectkind', function (topic, product) {
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
             this.setState((prevState, props) => {
                 let aaa=prevState;
-                if(product.length==4){
-                    aaa.selectbtns[0]=btnlist[product[0]];
-                    aaa.selectbtns[1]=btnlist[product[1]];
-                    aaa.selectbtns[2]=btnlist[product[2]];
-                    aaa.selectbtns[3]=btnlist[product[3]];
-                }
-                return aaa;
-            });
-        }.bind(this));
-        setInterval(()=>{
-            let aaa=this.state.dataLocal;
-            if(aaa!=Global.local){
-                this.setState({dataLocal:Global.local});
-            }
-        },500);
-    };
-    componentWillUnmount () {
-        PubSub.unsubscribe(this.select);
-    };
-    onbtnsPress(keyValue){
+                aaa.selectbtns=[
+                    t_Global.selectbtns[0],t_Global.selectbtns[1],t_Global.selectbtns[2],t_Global.selectbtns[3]
+                ];
+                aaa.dataLocal=t_Global.local;
+                aaa.data=t_Global;
+                return aaa
+            })
+        });
+
+    }
+
+    onbtnsPress(e,keyValue){
+        let _data=this.state.data;
+        let _val=_data.selectbtns[keyValue][3];
+        if(_val==2){
+            _data.selectbtns[keyValue][3]=1;
+        }else{
+            _data.selectbtns[keyValue][3]=2;
+        }
+        datastorage.save({
+            key:'theGlobal',
+            data:_data,expires:null
+        });
         this.setState((prevState, props) => {
             let aaa=prevState;
-            let _val=aaa.selectbtns[keyValue][3];
-            if(_val==2){
-                aaa.selectbtns[keyValue][3]=1;
-            }else{
-                aaa.selectbtns[keyValue][3]=2;
-            }
+            aaa.selectbtns=[
+                _data.selectbtns[0],_data.selectbtns[1],_data.selectbtns[2],_data.selectbtns[3]
+            ];
+            aaa.data=_data;
             return aaa;
         });
-    };
-    onbtnList(){
+    }
+    onbtnList(e){
         this.setState((prevState, props) => {
             let aaa=prevState;
             let _val=aaa.btnListKind[0];
@@ -92,14 +95,24 @@ class HomeBoxScreen extends React.Component {
             aaa.btnListKind[1]=_val;
             return aaa;
         });
-    };
-    change_sbKind(val){
+    }
+    change_sbKind(e,val){
         this.setState((prevState, props) => {
             let aaa=prevState;
             aaa.sbKind[4]=val;
             return aaa;
         });
-    };
+    }
+    _goToAuth(e){
+        this.setState({show:'flex'});
+        let _this=this;
+        setTimeout(function() {
+            _this.setState({show:'none'});
+        },1000);
+        setTimeout(function() {
+            _this.props.screenProps.dispatch(navigateAction2);
+        },510);
+    }
     render(){
         let ddd=this.state.dataLocal;let Lddd;
         const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal',params:{city:City.theCity,local:ddd}});
@@ -110,28 +123,28 @@ class HomeBoxScreen extends React.Component {
         }
         return(
             <View style={{flex:1}}>
+                <View style={{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.8)',justifyContent:'center', alignItems: 'center',display:this.state.show,zIndex:11111}}>
+                    <ActivityIndicator size='large'/>
+                </View>
                 <View style={{height:height,position:'relative',justifyContent:'center'}}>
                     <Image style={styles.headerimg} source={require('../../image/shouye_header.png')}/>
                     <View style={styles.headertop}>
-                        <TouchableNativeFeedback onPress={()=>{
+                        <TouchableNativeFeedback onPress={(event)=>{
                 this.props.screenProps.dispatch(navigateAction1);}}>
                             <View style={styles.headerLocal}>
                                 <Image source={require('../../image/local.png')} style={styles.headericonLocal}/>
                                 <Text style={styles.headerLT}>{Lddd}...</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={()=>{
-                this.props.screenProps.dispatch(navigateAction2);}}>
+                        <TouchableNativeFeedback
+                            onPress={this._goToAuth.bind(this)}
+                        >
                             <View style={[styles.headerLocalRight,{right:35}]}>
                                 <Image source={require('../../image/select.png')} style={styles.headericon}/>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
-                        if(Global.auth.is_auth==0){
                         this.props.screenProps.dispatch(navigateAction3);
-                        }else{
-                        alert('已认证')
-                        }
                         }}>
                             <View style={styles.headerLocalRight}>
                                 <Image source={require('../../image/auth.png')} style={styles.headericon}/>
@@ -139,44 +152,69 @@ class HomeBoxScreen extends React.Component {
                         </TouchableNativeFeedback>
                     </View>
                     <View style={styles.headerbtnlist}>
-                        <TouchableNativeFeedback  onPress={()=>{this.onbtnList();}}>
-                            <View style={styles.headerbtns}>
-                                <View style={this.state.btnListKind[1]}>
-                                    <Image style={styles.btnlistimg} source={this.state.sbKind[this.state.sbKind[4]][1]}/>
-                                    <Text style={[styles.btnlisttext,{color:'#179EDD',top:4}]}>︾</Text>
-                                </View>
-                            </View>
+                        <View style={styles.headerbtns}>
+                        <TouchableNativeFeedback
+                            delayPressIn={500}
+                            onPress={this.onbtnList.bind(this)}
+                        >
+                            <Image style={styles.btnlistimg} source={this.state.sbKind[this.state.sbKind[4]][1]}/>
+
                         </TouchableNativeFeedback>
+                            <Text style={[styles.btnlisttext,{color:'#179EDD',top:4}]}>︾</Text>
+                        </View>
                         <View style={[this.state.btnListKind[0],styles.btnlistkind]}>
-                            <TouchableNativeFeedback  onPress={()=>{this.onbtnList();this.change_sbKind(0);}}>
+                            <TouchableNativeFeedback
+                                onPress={this.onbtnList.bind(this)}
+                                onPress={this.change_sbKind.bind(this)}
+                                onPress={e=>{this.onbtnList(e);this.change_sbKind(e,0)}}
+                            >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[0][1]}/></TouchableNativeFeedback>
-                            <TouchableNativeFeedback  onPress={()=>{this.onbtnList();this.change_sbKind(1);}}>
+                            <TouchableNativeFeedback
+                                onPress={this.onbtnList.bind(this)}
+                                onPress={this.change_sbKind.bind(this)}
+                                onPress={e=>{this.onbtnList(e);this.change_sbKind(e,1)}}
+                            >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[1][1]}/></TouchableNativeFeedback>
-                            <TouchableNativeFeedback  onPress={()=>{this.onbtnList();this.change_sbKind(2);}}>
+                            <TouchableNativeFeedback
+                                onPress={this.onbtnList.bind(this)}
+                                onPress={this.change_sbKind.bind(this)}
+                                onPress={e=>{this.onbtnList(e);this.change_sbKind(e,2)}}
+                            >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[2][1]}/></TouchableNativeFeedback>
-                            <TouchableNativeFeedback  onPress={()=>{this.onbtnList();this.change_sbKind(3);}}>
+                            <TouchableNativeFeedback
+                                onPress={this.onbtnList.bind(this)}
+                                onPress={this.change_sbKind.bind(this)}
+                                onPress={e=>{this.onbtnList(e);this.change_sbKind(e,3)}}
+                            >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[3][1]}/></TouchableNativeFeedback>
                         </View>
 
-                        <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(0);}}>
+                        <TouchableNativeFeedback
+                            onPress={this.onbtnsPress.bind(this)}
+                            onPress={e=>this.onbtnsPress(e,0)}
+                        >
                             <View style={styles.headerbtns}>
+
                                 <Image source={this.state.selectbtns[0][this.state.selectbtns[0][3]]} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[0][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(1);}}>
+                        <TouchableNativeFeedback onPress={this.onbtnsPress.bind(this)}
+                                                 onPress={e=>this.onbtnsPress(e,1)}>
                             <View style={styles.headerbtns}>
                                 <Image source={this.state.selectbtns[1][this.state.selectbtns[1][3]]} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[1][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(2);}}>
+                        <TouchableNativeFeedback onPress={this.onbtnsPress.bind(this)}
+                                                 onPress={e=>this.onbtnsPress(e,2)}>
                             <View style={styles.headerbtns}>
                                 <Image source={this.state.selectbtns[2][this.state.selectbtns[2][3]]} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[2][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback  onPress={()=>{this.onbtnsPress(3);}}>
+                        <TouchableNativeFeedback  onPress={this.onbtnsPress.bind(this)}
+                                                  onPress={e=>this.onbtnsPress(e,3)}>
                             <View style={styles.headerbtns}>
                                 <Image source={this.state.selectbtns[3][this.state.selectbtns[3][3]]} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[3][0]}</Text>
@@ -207,19 +245,9 @@ const navigateAction2 = NavigationActions.navigate({routeName: 'pHomeSelect'});
 const navigateAction3 = NavigationActions.navigate({routeName: 'pHomeAuth'});
 const navigateAction4 = NavigationActions.navigate({routeName: 'pHomeKind'});
 
+
 let width=Dimensions.get('window').width;
 let height=width/639*256;
-
-let btnlist=[['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png')],
-    ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
-    ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png')],
-    ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png')],
-    ['艺术设计',require('../../image/KB_art1.png'),require('../../image/KB_art2.png')],
-    ['空间设计',require('../../image/KB_space1.png'),require('../../image/KB_space2.png')],
-    ['虚拟现实',require('../../image/KB_vr1.png'),require('../../image/KB_vr2.png')],
-    ['珠宝设计',require('../../image/KB_jewellery1.png'),require('../../image/KB_jewellery2.png')],
-    ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png')]];
-
 const styles=StyleSheet.create({
     headerimg:{
         width:width,flex:1
@@ -253,7 +281,7 @@ const styles=StyleSheet.create({
         flex:1,justifyContent: 'center',
     },
     btnlistimg:{
-        width:50,height:50,alignSelf:'center'
+        width:50,height:50,alignSelf:'center',borderRadius:25
     },
     btnlisttext:{
         color:'#eee',alignSelf:'center'

@@ -12,11 +12,10 @@ class MoreScreen extends React.Component{
         header:null,
         tabBarLabel:null
     });
-    tabBarLabel
     render(){
         return(
             <View>
-
+                <Text>123</Text>
             </View>
         )
 

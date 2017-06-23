@@ -46,9 +46,9 @@ export default class HomeSelect2 extends React.Component {
                         keyboardShouldPersistTaps='never'
                         style={{backgroundColor:'#fff'}}
             >
-            <View >
-                <View style={styles.selectHeader}>
-                    <TouchableNativeFeedback onPress={()=>{
+                <View >
+                    <View style={styles.selectHeader}>
+                        <TouchableNativeFeedback onPress={()=>{
                     if(Global.selectKeyword==''){
                     this.props.navigation.dispatch(navigateActionback)
                     }else{
@@ -56,17 +56,17 @@ export default class HomeSelect2 extends React.Component {
                     }
 
                     }}>
-                        <View style={{height:60,width:60}} >
-                            <Image style={{height:40,width:40,marginTop:10}} source={require('../../image/returnIcon.png')}/>
-                        </View>
-                    </TouchableNativeFeedback>
-                    <TextInput placeholder="请输入"
-                               style={{flex:1,fontSize:16,paddingLeft:20,paddingTop:12,borderRadius:20,height:40,backgroundColor:'#eee',marginTop:10,marginLeft:-10}}
-                               underlineColorAndroid="transparent"
-                               autoCorrect={false}
-                               autoFocus={fouseon}
-                               defaultvalue={first}
-                               onSubmitEditing={()=>{
+                            <View style={{height:60,width:60}} >
+                                <Image style={{height:40,width:40,marginTop:10}} source={require('../../image/returnIcon.png')}/>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <TextInput placeholder="请输入"
+                                   style={{flex:1,fontSize:16,paddingLeft:20,paddingTop:12,borderRadius:20,height:40,backgroundColor:'#eee',marginTop:10,marginLeft:-10}}
+                                   underlineColorAndroid="transparent"
+                                   autoCorrect={false}
+                                   autoFocus={fouseon}
+                                   defaultvalue={first}
+                                   onSubmitEditing={()=>{
                                 if(this.state.isSubmit){
                                     Global.selectKeyword=this.state.selectKey;
                                     datastorage.save({
@@ -78,7 +78,7 @@ export default class HomeSelect2 extends React.Component {
                                 alert("搜索内容不可为空");
                                 }
                             }}
-                               onChangeText={(text) =>{
+                                   onChangeText={(text) =>{
                                if(text.length==0){
                                this.setState({isSubmit:false});
                                }else{
@@ -86,8 +86,8 @@ export default class HomeSelect2 extends React.Component {
                                }
                                this.setState({selectKey:text});
                             }}
-                    />
-                    <TouchableNativeFeedback onPress={()=>{
+                        />
+                        <TouchableNativeFeedback onPress={()=>{
                     if(this.state.isSubmit){
                         Global.selectKeyword=this.state.selectKey;
                         datastorage.save({
@@ -99,126 +99,126 @@ export default class HomeSelect2 extends React.Component {
                     alert("搜索内容不可为空");
                     }
                     }}>
-                        <View style={{height:60,width:60}} >
-                            <Text style={{color:isok,fontSize:18,lineHeight:40,paddingLeft:10}}>搜索</Text>
-                        </View>
-                    </TouchableNativeFeedback>
-                </View>
-                <View style={{padding:10,display:iddis}}>
-                <View style={{flexDirection:'row',position:'relative',height:20}}>
-                <Text style={{fontSize:16}}>历史记录</Text>
-                    <TouchableNativeFeedback onPress={()=>{
+                            <View style={{height:60,width:60}} >
+                                <Text style={{color:isok,fontSize:18,lineHeight:40,paddingLeft:10}}>搜索</Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>
+                    <View style={{padding:10,display:iddis}}>
+                        <View style={{flexDirection:'row',position:'relative',height:20}}>
+                            <Text style={{fontSize:16}}>历史记录</Text>
+                            <TouchableNativeFeedback onPress={()=>{
                     SelectionOld.selectKey=[];
                     dataSelectstorage.save({
                         key: 'theSelectionOld',
                         data:SelectionOld
                         });
                     }}>
-                        <Image source={require('../../image/delete.png')} style={{position:'absolute',height:20,width:20,top:0,right:0}}/>
-                    </TouchableNativeFeedback>
-                </View>
-                    <TextBtnlistOld screenProps={this.props.navigation} value={this.state.listdata}/>
-                </View>
-                <Text style={{padding:10}}>快速搜索</Text>
-                <View style={{borderTopColor:'#eee',borderTopWidth:1}}>
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                                <Image source={require('../../image/delete.png')} style={{position:'absolute',height:20,width:20,top:0,right:0}}/>
+                            </TouchableNativeFeedback>
+                        </View>
+                        <TextBtnlistOld screenProps={this.props.navigation} value={this.state.listdata}/>
+                    </View>
+                    <Text style={{padding:10}}>快速搜索</Text>
+                    <View style={{borderTopColor:'#eee',borderTopWidth:1}}>
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
+                            </View>
+
+                        </View>
+
+                    </View>
+                    <View >
+                        <View style={styles.quickbtn}>
+                            <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
+                            <View style={{paddingLeft:15,flex:1}}>
+                                <Text style={{fontSize:20}}>艺术绘画</Text>
+                                <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
+                            </View>
+
                         </View>
 
                     </View>
                 </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.logo}/>
-                        </View>
-
-                    </View>
-
-                </View>
-                <View >
-                    <View style={styles.quickbtn}>
-                        <Image style={styles.quickbtnimg} source={require('../../image/KB_art1.png')}/>
-                        <View style={{paddingLeft:15,flex:1}}>
-                            <Text style={{fontSize:20}}>艺术绘画</Text>
-                            <TextBtnlist screenProps={this.props.navigation} value={Global.art}/>
-                        </View>
-
-                    </View>
-
-                </View>
-            </View>
             </ScrollView>
 
         )

@@ -7,9 +7,12 @@ import {
     ListView,
 } from 'react-native';
 import {PullList} from 'react-native-pull';
+import ImageViewer from 'react-native-image-zoom-viewer';
 let long=30;
-export default class HomeContent extends Component {
+import { NavigationActions } from 'react-navigation'
 
+
+export default class HomeContent extends Component {
     constructor(props) {
         super(props);
         this.dataSource = [];
@@ -61,6 +64,9 @@ export default class HomeContent extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <TouchableNativeFeedback>
+                    <Image source={require('../../image/backtop.png')} style={{width:30,height:30,position:'absolute',bottom:10,right:10}}/>
+                </TouchableNativeFeedback>
                 <PullList
                     ref={(scrollView) => { this._scrollView = scrollView; }}
                     style={{}}
@@ -87,15 +93,23 @@ export default class HomeContent extends Component {
     }
 
     renderRow(rowData, sectionID, rowID, highlightRow) {
+        console.log(typeof (rowData.keyword));
         var dddlist=String(rowData.keyword).split(",");
         var _sex=String(rowData.sex);
         _sex=_sex==0?require('../../image/man.png'):require('../../image/women.png');
         var _pathimg=String(rowData._pathimg).split(',');
+        var touxiang=rowData.path;
+        if(touxiang!=undefined&&touxiang.indexOf('http')==-1){
+            touxiang='https://www.huakewang.com/'+touxiang
+        }
         return (
             <View style={{height: 300, backgroundColor: '#fff'}}>
                 <View style={{height:50,marginLeft:10,marginRight:10,borderBottomWidth:1,borderBottomColor:'#eee',flexDirection:'row'}}>
-                    <TouchableNativeFeedback >
-                    <Image source={{uri:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460'}} style={{width:40,height:40,marginTop:5}}/>
+                    <TouchableNativeFeedback onPress={()=>{
+                    const navigateAction5 = NavigationActions.navigate({routeName: 'Designer',params:{name:rowData.name,from:'designer'}});
+                    this.props.navigation.dispatch(navigateAction5);
+                    }}>
+                    <Image source={{uri:touxiang}} style={{width:40,height:40,marginTop:5}}/>
                     </TouchableNativeFeedback>
                     <View style={{height:40,flex:1,marginTop:5}}>
                     <View style={{height:20,paddingLeft:10,flexDirection:'row'}}>
@@ -179,6 +193,7 @@ export default class HomeContent extends Component {
                 sex:0,
                 kindSelect:`距离：300M`,
                 keyword:[`软件设计`,1,1,1],
+                path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
                 _pathimg:['http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115']
         });
             for(var i = 0; i < 5; i++) {
@@ -188,19 +203,19 @@ export default class HomeContent extends Component {
                     sex:i%2,
                     kindSelect:`距离：`+i*100+`M`,
                     username:`sdfasfd`,
-                    keyword:[,4,'10','21321'],
+                    keyword:[,4,'10','21321'],path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
                     _pathimg:['http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115']
                 });
                 long--;
             }
 
             this.dataSource.push({
-                id: 6,
+                id: 6,name:'qianxuehuanyu',
                 title: `finish create data ...`,
                 username:`sdfasfd`,
                 sex:0,
                 kindSelect:`距离：300M`,
-                keyword:[`软件设计`,13,3,12312],
+                keyword:[`软件设计`,13,3,12312],path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
                 _pathimg:['http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115','http://huakewang.b0.upaiyun.com/2016/06/28/20160628001252626506.jpg!160x115']
             });
             setTimeout(() => {

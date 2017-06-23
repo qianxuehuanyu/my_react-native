@@ -49,13 +49,13 @@ export default class LocalselectScreen extends React.Component {
     }
     componentDidMount () {
         this.selectKeyval = PubSub.subscribe('cityKeyword', function (topic, product) {
-            this.setState((prevState, props) => {
-                let aaa=prevState;
-                aaa.keyword=product;
-                return aaa
-            })
-        }.bind(this)
-    )}
+                this.setState((prevState, props) => {
+                    let aaa=prevState;
+                    aaa.keyword=product;
+                    return aaa
+                })
+            }.bind(this)
+        )}
     componentWillUnmount () {
         PubSub.unsubscribe(this.selectKeyval);
     };
@@ -67,49 +67,49 @@ export default class LocalselectScreen extends React.Component {
             <ScrollView keyboardDismissMode='on-drag'
                         keyboardShouldPersistTaps='never'
             >
-            <View style={{height:50,backgroundColor:'#fff'}}>
-                <View style={{height:40,marginTop:6,marginLeft:15,marginRight:15,borderRadius:20,backgroundColor:'#eee',flexDirection:'row',paddingTop:5}}>
-                <Image source={require('../../image/localfind.png')} style={{height:30,width:30,marginLeft:5}}/>
-                <TextInput placeholder="请输入"
-                           style={{flex:1,fontSize:16,paddingLeft:10,paddingTop:5}}
-                           underlineColorAndroid="transparent"
-                           defaultValue={this.state.result}
-                           autoCorrect={false}
-                           selectTextOnFocus={true}
-                           onChangeText={(text) =>{
+                <View style={{height:50,backgroundColor:'#fff'}}>
+                    <View style={{height:40,marginTop:6,marginLeft:15,marginRight:15,borderRadius:20,backgroundColor:'#eee',flexDirection:'row',paddingTop:5}}>
+                        <Image source={require('../../image/localfind.png')} style={{height:30,width:30,marginLeft:5}}/>
+                        <TextInput placeholder="请输入"
+                                   style={{flex:1,fontSize:16,paddingLeft:10,paddingTop:5}}
+                                   underlineColorAndroid="transparent"
+                                   defaultValue={this.state.result}
+                                   autoCorrect={false}
+                                   selectTextOnFocus={true}
+                                   onChangeText={(text) =>{
                            this.setState({selectKey:text});
                            this.keywordSelect(text);
                            }}
-                />
+                        />
+                    </View>
                 </View>
-            </View>
-            <View style={{flexDirection:'row',marginTop:10,borderColor:'#aaa',borderWidth:1,marginLeft:10,marginRight:10,borderRadius:5,
+                <View style={{flexDirection:'row',marginTop:10,borderColor:'#aaa',borderWidth:1,marginLeft:10,marginRight:10,borderRadius:5,
             padding:10,paddingBottom:0,flexWrap:'wrap'}}>
-                <Keywordbtn val={0}/>
-                <Keywordbtn val={1}/>
-                <Keywordbtn val={2}/>
-                <Keywordbtn val={3}/>
-                <Keywordbtn val={4}/>
-                <Keywordbtn val={5}/>
-                <Keywordbtn val={6}/>
-                <Keywordbtn val={7}/>
-                <Keywordbtn val={8}/>
-                <Keywordbtn val={9}/>
-                <Keywordbtn val={10}/>
-                <Keywordbtn val={11}/>
-                <Keywordbtn val={12}/>
-                <Keywordbtn val={13}/>
-                <Keywordbtn val={14}/>
-                <Keywordbtn val={15}/>
-                <Keywordbtn val={16}/>
-                <Keywordbtn val={17}/>
-                <Keywordbtn val={18}/>
-                <Keywordbtn val={19}/>
-                <Keywordbtn val={20}/>
-                <Keywordbtn val={21}/>
-            </View>
+                    <Keywordbtn val={0}/>
+                    <Keywordbtn val={1}/>
+                    <Keywordbtn val={2}/>
+                    <Keywordbtn val={3}/>
+                    <Keywordbtn val={4}/>
+                    <Keywordbtn val={5}/>
+                    <Keywordbtn val={6}/>
+                    <Keywordbtn val={7}/>
+                    <Keywordbtn val={8}/>
+                    <Keywordbtn val={9}/>
+                    <Keywordbtn val={10}/>
+                    <Keywordbtn val={11}/>
+                    <Keywordbtn val={12}/>
+                    <Keywordbtn val={13}/>
+                    <Keywordbtn val={14}/>
+                    <Keywordbtn val={15}/>
+                    <Keywordbtn val={16}/>
+                    <Keywordbtn val={17}/>
+                    <Keywordbtn val={18}/>
+                    <Keywordbtn val={19}/>
+                    <Keywordbtn val={20}/>
+                    <Keywordbtn val={21}/>
+                </View>
                 <Text>历史地址：{this.state.keyword}</Text>
-            <KeywordList screenProps={this.state.navigation}/>
+                <KeywordList screenProps={this.props.navigation}/>
             </ScrollView>
         )
     }
@@ -125,12 +125,12 @@ class KeywordList extends React.Component {
             }
         }
         this.state = {
-            dataSource: ds.cloneWithRows(datadata),
+            dataSource: ds.cloneWithRows(datadata)
         };
     }
     componentDidMount () {
         this.SKeyval = PubSub.subscribe('KKeyword', function (topic, product) {
-            datadata=[];
+                datadata=[];
                 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
                 for(let ll=0;ll<theKeyWordList.length;ll++){
                     if(theKeyWordList[ll].keyword==product){
@@ -157,21 +157,23 @@ class KeywordList extends React.Component {
     componentWillUnmount () {
         PubSub.unsubscribe(this.SKeyval);
         PubSub.unsubscribe(this.FKeyval);
-
-    };
+    }
     _renderRow(rowData){
+        var _this=this;
         return (
             <TouchableNativeFeedback onPress={
-            ()=>{
+            (event)=>{
             if(City.usedcity.indexOf(rowData.city)<0){
             City.usedcity.unshift(rowData.city)
-            };
-            this.state.screenProps.dispatch(navigateAction1);
-                City.theCity=rowData.city;
-                dataCitystorage.save({
-                        key: 'theCity',
-                        data:City
-                        });
+            }
+            City.theCity=rowData.city;
+            console.log(rowData.city,City);
+            dataCitystorage.save({
+            key: 'theCity',
+            data:City
+            });
+            _this.props.screenProps.dispatch(navigateAction1);
+
             }
             }>
                 <View style={{height:35,backgroundColor:'#fff',paddingLeft:10}}>
@@ -183,31 +185,33 @@ class KeywordList extends React.Component {
     }
     _renderHeader(){
         let hhh=City.usedcity;
+        let _this=this;
         return(
             <View style={{flex:1 ,flexDirection:'row',padding:5}}>
                 <TouchableNativeFeedback onPress={
-            ()=>{
-                this.state.screenProps.dispatch(navigateAction1);
+            (event)=>{
                 City.theCity=hhh[0];
                 dataCitystorage.save({
-                        key: 'theCity',
-                        data:City
-                        });
+                key: 'theCity',
+                data:City
+                });
+                _this.props.screenProps.dispatch(navigateAction1);
+
             }
             }>
-                    <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[0]==undefined?'none':'flex'}}>
+                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,minWidth:30,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[0]==undefined?'none':'flex'}}>
                         <Text style={{fontSize:16,lineHeight:20,alignSelf:'center'}}>{hhh[0]}</Text>
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[1];
                 dataCitystorage.save({
-                        key: 'theCity',
-                        data:City
-                        });
+                key: 'theCity',
+                data:City
+                });
 
+                _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[1]==undefined?'none':'flex'}}>
@@ -216,12 +220,12 @@ class KeywordList extends React.Component {
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[2];
                 dataCitystorage.save({
-                        key: 'theCity',
-                        data:City
-                        });
+                key: 'theCity',
+                data:City
+                });
+                _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[2]==undefined?'none':'flex'}}>
@@ -230,12 +234,12 @@ class KeywordList extends React.Component {
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                this.state.screenProps.dispatch(navigateAction1);
                 City.theCity=hhh[3];
                 dataCitystorage.save({
-                        key: 'theCity',
-                        data:City
-                        });
+                key: 'theCity',
+                data:City
+                });
+                _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
                     <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[3]==undefined?'none':'flex'}}>
@@ -296,4 +300,11 @@ class Keywordbtn extends React.Component {
         )
     }
 }
-const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal',params:{city:City.theCity,local:''}});
+
+const navigateAction1 = NavigationActions.reset({
+    index: 1,
+    actions: [
+        NavigationActions.navigate({ routeName: 'Box'}),
+        NavigationActions.navigate({ routeName: 'pHomeLocal',params:{city:City.theCity,local:''}})
+    ]
+});

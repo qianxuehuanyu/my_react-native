@@ -16,26 +16,26 @@ import {Global,datastorage} from '../AgainBody/data'
 
 
 export default class HomeLocal extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        const {state, setParams} = navigation;
-        const {city} = state.params;
-        return {
-            title: `当前城市： ${navigation.state.params.city}`,
-            headerRight:(<TouchableOpacity
-                onPress={()=>{
-             navigation.dispatch(navigateAction2)
-            }
-            }>
-                <Text style={{color:'#048bef',paddingRight:10}}>切换城市</Text>
-            </TouchableOpacity>)
-        }
-    };
+    static navigationOptions = ({ navigation }) => ({
+        header:null
+    });
     render(){
         const {state, setParams} = this.props.navigation;
         const {city,local} = state.params;
         const {navigate} = this.props.navigation;
         return(
+            <View>
+                <View style={{height:60,backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#111',
+                flexDirection:'row',justifyContent:'center'
+                }}>
+                    <Image source={require('../../image/returnIcon.png')} style={{height:50,width:50}} />
+                    <View style={{flex:1}}>
+                        <Text>{this.state.city}</Text></View>
+                    <View><Text>更改城市</Text></View>
+
+                </View>
             <Localindex screenProps={this.props.navigation} city={city} local={local}/>
+                </View>
         )
     }
 };
@@ -102,38 +102,38 @@ class Localindex extends React.Component {
             <ScrollView keyboardDismissMode='on-drag'
                         keyboardShouldPersistTaps='never'
             >
-            <View>
-                <TouchableNativeFeedback onPress={()=>{
+                <View>
+                    <TouchableNativeFeedback onPress={()=>{
                 this.gpsget();this.getdataGPS();
                 }}>
-                    <View style={{height:55,paddingTop:10 ,flexDirection:'row',justifyContent:'center',backgroundColor:'#fff'}}>
-                        <Image style={{height:35,width:35,display: this.state.kindcss[0]}} source={require('../../image/gps.png')}/>
-                        <Text style={{color:'#409ad6',fontSize:18,lineHeight:30,paddingLeft:10,display:this.state.kindcss[1]}}>定位当前位置</Text>
-                        <Text style={{display:this.state.kindcss[2],color:'#ddd',fontSize:18,lineHeight:30,}}>...请稍等</Text>
-                        <Text style={{display:this.state.kindcss[3],lineHeight:30,fontSize:18,color:'#409ad6'}}>
-                            {this.state.result}
-                        </Text>
-                    </View>
-                </TouchableNativeFeedback>
-                <Text style={{fontSize:18,color:'#333',padding:10}}>手动输入：</Text>
-                <View style={{height:55,flexDirection:'row',backgroundColor:'#fff'}}>
-                    <Image source={require('../../image/inputlocal.png')} style={{height:45,width:45,marginTop:10,marginLeft:5}}/>
-                    <TextInput placeholder="请输入"
-                               style={{flex:1,fontSize:20,paddingLeft:10,paddingRight:10,marginTop:10}}
-                               underlineColorAndroid="transparent"
-                               defaultValue={this.state.result}
-                               autoCorrect={false}
-                               selectTextOnFocus={true}
-                               onChangeText={(text) =>this.setState({result:text})}
-                               onBlur={()=>{
+                        <View style={{height:55,paddingTop:10 ,flexDirection:'row',justifyContent:'center',backgroundColor:'#fff'}}>
+                            <Image style={{height:35,width:35,display: this.state.kindcss[0]}} source={require('../../image/gps.png')}/>
+                            <Text style={{color:'#409ad6',fontSize:18,lineHeight:30,paddingLeft:10,display:this.state.kindcss[1]}}>定位当前位置</Text>
+                            <Text style={{display:this.state.kindcss[2],color:'#ddd',fontSize:18,lineHeight:30,}}>...请稍等</Text>
+                            <Text style={{display:this.state.kindcss[3],lineHeight:30,fontSize:18,color:'#409ad6'}}>
+                                {this.state.result}
+                            </Text>
+                        </View>
+                    </TouchableNativeFeedback>
+                    <Text style={{fontSize:18,color:'#333',padding:10}}>手动输入：</Text>
+                    <View style={{height:55,flexDirection:'row',backgroundColor:'#fff'}}>
+                        <Image source={require('../../image/inputlocal.png')} style={{height:45,width:45,marginTop:10,marginLeft:5}}/>
+                        <TextInput placeholder="请输入"
+                                   style={{flex:1,fontSize:20,paddingLeft:10,paddingRight:10,marginTop:10}}
+                                   underlineColorAndroid="transparent"
+                                   defaultValue={this.state.result}
+                                   autoCorrect={false}
+                                   selectTextOnFocus={true}
+                                   onChangeText={(text) =>this.setState({result:text})}
+                                   onBlur={()=>{
                                this.onTIblur(this.state.result);
                                }}
-                    />
+                        />
+                    </View>
+                    <Text style={{fontSize:18,color:'#333',padding:10}}>历史位置：</Text>
+                    <Oldloaclhistroy localdata={aaa} screenProps={this.props.screenProps}/>
                 </View>
-                <Text style={{fontSize:18,color:'#333',padding:10}}>历史位置：</Text>
-                <Oldloaclhistroy localdata={aaa} screenProps={this.props.screenProps}/>
-            </View>
-        </ScrollView>
+            </ScrollView>
         )
     }
 }
