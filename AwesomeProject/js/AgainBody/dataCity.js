@@ -14,8 +14,7 @@ const dataCitystorage =new Storage({
 
     sync: {theCity(){
         return {
-            usedcity:['杭州'],
-            theCity:'杭州'
+            usedcity:['杭州']
         };
     }}
 });

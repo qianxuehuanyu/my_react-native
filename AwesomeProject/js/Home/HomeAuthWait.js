@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {
-    View,Text,ActivityIndicator
+    View,Text,ActivityIndicator,TouchableNativeFeedback
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 
@@ -12,7 +12,7 @@ export default class HomeAuthWaitScreen extends React.Component{
         return {
             title: `设计师认证`,
             headerRight:(<TouchableNativeFeedback
-                onPress={()=>{
+                onPress={e=>{
              navigation.dispatch(navigateAction1)
             }
             }>

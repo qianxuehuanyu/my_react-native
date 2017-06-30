@@ -26,6 +26,7 @@ const datastorage =new Storage({
     // 或是在任何时候，直接对storage.sync进行赋值修改
     sync: {theGlobal(){
         return {
+            islogin:true,
             username:'qianxuehuanyu',
             local: '滨江区长河路351号dfasdf',
             city:'杭州',
@@ -90,16 +91,16 @@ let Global={
     internet:['名片','海报','画册','封面','所装','标识'],
     path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
     showwait:'none',
-    aaoldlocal:[{local: "杭州市dfasdfasf", keyword: 'home'},
-        {local: "杭州市dfasdfasf", keyword: 'company'},
-        {local: "杭州市dfasdfasf", keyword: 'null'}],
+    aaoldlocal:[{local: "西湖区dfasdfasf", keyword: 'home'},
+        {local: "dafsdfasdfasf", keyword: 'company'},
+        {local: "dasdfasdfasf", keyword: 'null'}],
     auth:{submitResult:'提交',path:'',is_auth:0,kind:'',sex:'',showname:'',experience:null,education:null,skill:[],
         works:[]
     },
     AnyChat_images:[{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/27/20160427190906563685.jpg',href:'http://www.huakewang.com/'}
         ,{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/27/20160427203805857517.jpg',href:'http://www.huakewang.com/'}
         ,{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/26/20160426081736600936.jpg',href:'http://www.huakewang.com/'}],
-    AnyChat_top:[123,123,123,123],
+    AnyChat_top:[123,123,123,'999+'],
     selectbtns:[
         ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
         ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],

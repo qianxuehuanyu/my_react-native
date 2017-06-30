@@ -3,14 +3,13 @@
  */
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,DeviceEventEmitter,ActivityIndicator
+    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,ActivityIndicator
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from "../Sheetstyle/cssMain"
 import HomeContentScreen from './HomeContent'
 import {Global,datastorage} from '../AgainBody/data'
-import {City,dataCitystorage} from '../AgainBody/dataCity'
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -29,7 +28,6 @@ class HomeBoxScreen extends React.Component {
         header:null
     });
     constructor(props) {
-        console.log("props");
         super(props);
         this.state = {
             selectbtns: [
@@ -43,7 +41,7 @@ class HomeBoxScreen extends React.Component {
                 ['列表',require('../../image/selectlist.png')],0],
             btnListKind:[{display:'none'},{display:'flex'}],
             dataLocal:Global.local,
-            show:'none'
+            show:'none',
         };
     }
     componentDidMount () {
@@ -55,17 +53,13 @@ class HomeBoxScreen extends React.Component {
             let t_Global=ret;
             this.setState((prevState, props) => {
                 let aaa=prevState;
-                aaa.selectbtns=[
-                    t_Global.selectbtns[0],t_Global.selectbtns[1],t_Global.selectbtns[2],t_Global.selectbtns[3]
-                ];
+                aaa.selectbtns=t_Global.selectbtns;
                 aaa.dataLocal=t_Global.local;
                 aaa.data=t_Global;
                 return aaa
             })
         });
-
     }
-
     onbtnsPress(e,keyValue){
         let _data=this.state.data;
         let _val=_data.selectbtns[keyValue][3];
@@ -115,12 +109,25 @@ class HomeBoxScreen extends React.Component {
     }
     render(){
         let ddd=this.state.dataLocal;let Lddd;
-        const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal',params:{city:City.theCity,local:ddd}});
+        const navigateAction1 = NavigationActions.navigate({routeName: 'pHomeLocal'});
         if(ddd.length>13){
             Lddd=ddd.slice(0,8);
         }else{
             Lddd=ddd;
         }
+        let addMore=require('../../image/addkind.png');
+        let _more=this.state.selectbtns;
+            for(var i=3;i<_more.length;i++){
+                if(_more[i][3]==1){
+                    addMore=require('../../image/morekind.png');
+
+                }
+            }
+        let imgList0=this.state.selectbtns[0][3];let imgURL0=this.state.selectbtns[0][imgList0];
+        let imgList1=this.state.selectbtns[1][3];let imgURL1=this.state.selectbtns[1][imgList1];
+        let imgList2=this.state.selectbtns[2][3];let imgURL2=this.state.selectbtns[2][imgList2];
+        let imgList3=this.state.selectbtns[3][3];let imgURL3=this.state.selectbtns[3][imgList3];
+
         return(
             <View style={{flex:1}}>
                 <View style={{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.8)',justifyContent:'center', alignItems: 'center',display:this.state.show,zIndex:11111}}>
@@ -190,33 +197,30 @@ class HomeBoxScreen extends React.Component {
                         </View>
 
                         <TouchableNativeFeedback
-                            onPress={this.onbtnsPress.bind(this)}
                             onPress={e=>this.onbtnsPress(e,0)}
                         >
                             <View style={styles.headerbtns}>
 
-                                <Image source={this.state.selectbtns[0][this.state.selectbtns[0][3]]} style={styles.btnlistimg}/>
+                                <Image source={imgURL0} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[0][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={this.onbtnsPress.bind(this)}
-                                                 onPress={e=>this.onbtnsPress(e,1)}>
+                        <TouchableNativeFeedback
+                                 onPress={e=>this.onbtnsPress(e,1)}>
                             <View style={styles.headerbtns}>
-                                <Image source={this.state.selectbtns[1][this.state.selectbtns[1][3]]} style={styles.btnlistimg}/>
+                                <Image source={imgURL1} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[1][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={this.onbtnsPress.bind(this)}
-                                                 onPress={e=>this.onbtnsPress(e,2)}>
+                        <TouchableNativeFeedback onPress={e=>this.onbtnsPress(e,2)}>
                             <View style={styles.headerbtns}>
-                                <Image source={this.state.selectbtns[2][this.state.selectbtns[2][3]]} style={styles.btnlistimg}/>
+                                <Image source={imgURL2} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[2][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback  onPress={this.onbtnsPress.bind(this)}
-                                                  onPress={e=>this.onbtnsPress(e,3)}>
+                        <TouchableNativeFeedback  onPress={e=>this.onbtnsPress(e,3)}>
                             <View style={styles.headerbtns}>
-                                <Image source={this.state.selectbtns[3][this.state.selectbtns[3][3]]} style={styles.btnlistimg}/>
+                                <Image source={imgURL3} style={styles.btnlistimg}/>
                                 <Text style={styles.btnlisttext}>{this.state.selectbtns[3][0]}</Text>
                             </View>
                         </TouchableNativeFeedback>
@@ -225,7 +229,7 @@ class HomeBoxScreen extends React.Component {
                 this.props.screenProps.dispatch(navigateAction4);}}>
                             <View style={styles.headerbtns}>
                                 <View>
-                                    <Image style={[styles.btnlistimg]} source={require('../../image/addkind.png')}/>
+                                    <Image style={[styles.btnlistimg]} source={addMore}/>
                                     <Text style={[styles.btnlisttext]}>添加</Text>
                                 </View>
                             </View>

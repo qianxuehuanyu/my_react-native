@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,ListView
+    Text,Button,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,ListView,ToastAndroid
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import {Global,datastorage} from '../AgainBody/data'
@@ -28,13 +28,32 @@ export default class HomeKind extends React.Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        var data=Global.selectbtns;
+        var _data=Global.selectbtns;
         this.state = {
-            selectbtns:data,
-            dataSource:ds.cloneWithRows(data)
+            data:Global,
+            selectbtns:_data,
+            dataSource:ds.cloneWithRows(_data)
         };
     }
-    onbtnsPress(keyValue){
+    componentDidMount() {
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.data=t_Global;
+                aaa.selectbtns=t_Global.selectbtns;
+                aaa.dataSource=ds.cloneWithRows(t_Global.selectbtns);
+                return aaa
+            })
+        });
+    }
+    onbtnsPress(e,keyValue){
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.setState((prevState, props) => {
             let aaa=prevState;
             let _val=aaa.selectbtns[keyValue][3];
@@ -43,9 +62,11 @@ export default class HomeKind extends React.Component {
             }else{
                 aaa.selectbtns[keyValue][3]=2;
             }
+            aaa.data.selectbtns=aaa.selectbtns;
+            aaa.dataSource=ds.cloneWithRows(aaa.selectbtns);
             datastorage.save({
                 key:'theGlobal',
-                data:Global
+                data:aaa.data
             });
             return aaa;
         });
@@ -53,21 +74,30 @@ export default class HomeKind extends React.Component {
     _renderRow(rowData,index,rowID){
         var _index=parseInt(String(rowID));
         return(
-            <TouchableNativeFeedback onPress={()=>{this.onbtnsPress(_index);}}>
+            <TouchableNativeFeedback onPress={e=>{this.onbtnsPress(e,_index);}}>
                 <View style={styles.headerbtns}>
-                    <Image source={this.state.selectbtns[_index][this.state.selectbtns[_index][3]]} style={styles.btnlistimg}/>
-                    <Text style={styles.btnlisttext}>{this.state.selectbtns[_index][0]}</Text>
+                    <Image source={rowData[rowData[3]]} style={styles.btnlistimg}/>
+                    <Text style={styles.btnlisttext}>{rowData[0]}</Text>
                 </View>
             </TouchableNativeFeedback>
         )
     }
     render(){
+        let _text='本项主要涉及。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。';
+
+        if(_text.length>30){
+            let _text1=_text.split('',30);
+            _text=[_text1.join(''),'flex'];
+        }else{
+            let _text2=_text.split('');
+            _text=[_text2.join(''),'none'];
+        }
         return(
             <ScrollView keyboardDismissMode='on-drag'
                         keyboardShouldPersistTaps='never'
             >
                 <View>
-                    <Text>类型选择</Text>
+                    <Text>类别：</Text>
                     <View style={{paddingLeft:10,paddingRight:10,marginTop:5}}>
                         <ListView
                             dataSource={this.state.dataSource}
@@ -76,8 +106,15 @@ export default class HomeKind extends React.Component {
                         />
                     </View>
                 </View>
-                <View>
-                    <Text>123</Text>
+                <View style={{padding:10}}>
+                    <Text>介绍：</Text>
+                    <View>
+                        <Text style={{color:'#3e9dee',fontSize:18,fontWeight:'bold',marginBottom:4}}>艺术绘画</Text>
+                        <Text>{_text[0]}</Text>
+                        <TouchableNativeFeedback>
+                            <Text style={{color:'#3e9dee',display:_text[1]}}> >>详细 </Text>
+                        </TouchableNativeFeedback>
+                    </View>
                 </View>
             </ScrollView>
         )

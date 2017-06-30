@@ -14,7 +14,7 @@ export default class HomeAuth extends React.Component {
         return {
             title: `设计师认证`,
             headerRight:(<TouchableNativeFeedback
-                onPress={()=>{
+                onPress={e=>{
                 setTimeout(function() {
                   navigation.dispatch(navigateActionSubmit)
                 },1000);
@@ -26,11 +26,11 @@ export default class HomeAuth extends React.Component {
     };
     constructor(props) {
         super(props);
-
         this.state = {
             refresh:1,
             waitShow:'none',
-            data:Global
+            data:Global,
+            show:'none'
         }
     }
     componentDidMount () {
@@ -46,10 +46,29 @@ export default class HomeAuth extends React.Component {
                 return aaa
             })
         });
-
     }
     _touxiang(e){
         this.setState({refresh:1});
+    }
+    _goToAuthShow(e){
+        this.setState({show:'flex'});
+        let _this=this;
+        setTimeout(function() {
+            _this.setState({show:'none'});
+        },1000);
+        setTimeout(function() {
+            _this.props.navigation.dispatch(navigateAction2);
+        },510);
+    }
+    _goToAuthSkill(e){
+        this.setState({show:'flex'});
+        let _this=this;
+        setTimeout(function() {
+            _this.setState({show:'none'});
+        },1000);
+        setTimeout(function() {
+            _this.props.navigation.dispatch(navigateAction1);
+        },510);
     }
     render(){
         let imgpath;
@@ -63,15 +82,14 @@ export default class HomeAuth extends React.Component {
         let kindValue=this.state.data.auth.kind==''?null:this.state.data.auth.kind;
         let nameValue=this.state.data.auth.showname==''?null:this.state.data.auth.showname;
         let sexValue=this.state.data.auth.sex==''?null:this.state.data.auth.sex;
-        console.log(imgpath,this.state.data.auth.path);
         if(this.state.data.auth.is_auth==1){
             Alert.alert(
                 '提示：',
                 '已成功认证设计师',
                 [
                     {text: '修改资料', onPress: () => {},style: 'cancel'},
-                    {text: '前往查看', onPress: () => {this.props.dispatch(navigateAction5)}},
-                    {text: '返回首页', onPress: () => {this.props.dispatch(navigateActionReturn)}},
+                    {text: '前往查看', onPress: () => {this.props.navigation.dispatch(navigateAction5)}},
+                    {text: '返回首页', onPress: () => {this.props.navigation.dispatch(navigateActionReturn)}},
                 ]
             )
         }
@@ -79,6 +97,9 @@ export default class HomeAuth extends React.Component {
             <ScrollView keyboardDismissMode='on-drag'
                         keyboardShouldPersistTaps='never'
             >
+                <View style={{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.8)',justifyContent:'center', alignItems: 'center',display:this.state.show,zIndex:11111}}>
+                    <ActivityIndicator size='large'/>
+                </View>
 
                 <View style={{flex:1}}>
                     <Text style={{paddingLeft:10}}>选择头像:</Text>
@@ -200,11 +221,9 @@ export default class HomeAuth extends React.Component {
                     <Text style={{paddingLeft:10}}>擅长/专精：</Text>
                     <View style={{borderWidth:1,borderColor:'#aaa',backgroundColor:'#ffffff',padding:10,margin:10,borderRadius:5,flexDirection:'row'}}>
                         <View style={{flex:1}}>
-                            <Shanchanglingyu value={this.state.data.auth.skill}/>
+                            <Shanchanglingyu />
                         </View>
-                        <TouchableNativeFeedback onPress={()=>{
-                    this.props.navigation.dispatch(navigateAction1);
-                    }}>
+                        <TouchableNativeFeedback onPress={this._goToAuthSkill.bind(this)}>
                             <View style={{width:50,height:50,alignSelf:'center',borderColor:'#0366d6',borderWidth:1,borderRadius:5}}>
                                 <Text style={{fontSize:16,lineHeight:33,alignSelf:'center',color:'#0366d6'}}>修改</Text>
                             </View>
@@ -220,9 +239,7 @@ export default class HomeAuth extends React.Component {
                     </View>
                     <Shangchuanzuopin value={this.state.data.auth.works}/>
                     <View>
-                        <TouchableNativeFeedback onPress={()=>{
-                    this.props.navigation.dispatch(navigateAction2);
-                    }}>
+                        <TouchableNativeFeedback onPress={this._goToAuthShow.bind(this)}>
                             <Image source={require('../../image/more.png')}/>
                         </TouchableNativeFeedback>
                     </View>
@@ -236,12 +253,26 @@ class Shanchanglingyu extends React.Component {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         let listvalue=['暂无'];
-        if(this.props.value.length>0){
-            listvalue=this.props.value;
-        }
         this.state = {
             dataSource: ds.cloneWithRows(listvalue),
+            dataSkill:['暂无'],
         };
+    }
+    componentDidMount () {
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
+            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.dataSkill=t_Global.auth.skill;
+                aaa.dataSource=ds.cloneWithRows(t_Global.auth.skill);
+                return aaa
+            })
+        });
     }
     render(){
         return(
@@ -250,7 +281,7 @@ class Shanchanglingyu extends React.Component {
                 contentContainerStyle={{flexDirection:'row',flexWrap: 'wrap'}}
                 renderRow={(rowData) => {
                 return(
-                <View style={{paddingLeft:5,marginTop:10}}><Text>{rowData}</Text></View>
+                <View style={{paddingRight:5,marginTop:10}}><Text>{rowData}</Text></View>
                 )
                 }}
             />

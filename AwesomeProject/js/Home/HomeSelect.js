@@ -324,6 +324,5 @@ const styles=StyleSheet.create({
     },
     quickbtnimg:{
         height:60,width:60
-
     }
 });

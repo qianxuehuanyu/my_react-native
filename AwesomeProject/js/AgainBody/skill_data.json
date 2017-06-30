@@ -1,10 +1,26 @@
-{"skill":[{"keyword":"艺术绘画","data":["吉祥物","墙绘", "插画", "人设", "漫画", "表情"]},
-  {"keyword":"品牌建设","data":["品牌整案", "名片/卡片", "包装设计", "易拉宝", "封面/画册", "导视", "logo"]},
-  {"keyword":"互联网设计","data":["交互原型", "界面设计", "网页设计", "专题/活动", "banner"]},
-  {"keyword":"产品设计","data":["外观设计", "结构设计", "珠宝设计", "工具设计"]},
-  {"keyword":"空间设计","data":["软装设计", "工装设计", "家装设计", "美陈设计", "专卖店设计"]},
-  {"keyword":"虚拟现实","data":["建模、渲染", "虚拟现实", "三维特效", "园林景观", "雕塑设计", "360/720全景"]},
-  {"keyword":"多媒体","data":["影视后期", "宣传片", "微电影", "摄影师", "flash", "配音", "GIF"]},
-  {"keyword":"程序开发","data":["Android", "IOS", "SEO", "HTML5", "微信", "企业建站", "前端开发", "后端开发"]}
+{"skill":[
+  {"keyword":"艺术绘画",
+  "data":[{"text":"吉祥物","checked":false},{"text":"墙绘","checked":false}, {"text":"插画","checked":false}, {"text":"人设","checked":false},{"text":"漫画","checked":false}, {"text":"表情","checked":false}]},
+
+  {"keyword":"品牌建设",
+    "data":[{"text":"品牌整案","checked":false},{"text":"名片/卡片","checked":false},{"text":"包装设计","checked":false},{"text":"易拉宝","checked":false},{"text":"封面/画册","checked":false},{"text":"导视","checked":false},{"text":"logo","checked":false}]},
+
+  {"keyword":"互联网设计",
+    "data":[{"text":"交互原型","checked":false},{"text":"界面设计","checked":false},{"text":"网页设计","checked":false},{"text":"专题/活动","checked":false},{"text":"banner","checked":false}]},
+
+  {"keyword":"产品设计","checked":false,
+    "data":[{"text":"外观设计","checked":false},{"text":"结构设计","checked":false},{"text":"珠宝设计","checked":false},{"text":"工具设计","checked":false}]},
+
+  {"keyword":"空间设计",
+    "data":[{"text":"软装设计","checked":false},{"text":"工装设计","checked":false},{"text":"家装设计","checked":false},{"text":"美陈设计","checked":false},{"text":"专卖店设计","checked":false}]},
+
+  {"keyword":"虚拟现实",
+    "data":[{"text":"建模、渲染","checked":false},{"text":"虚拟现实","checked":false},{"text":"三维特效","checked":false},{"text":"园林景观","checked":false},{"text":"雕塑设计","checked":false},{"text":"360/720全景","checked":false}]},
+
+  {"keyword":"多媒体",
+    "data":[{"text":"影视后期","checked":false},{"text":"宣传片","checked":false},{"text":"微电影","checked":false},{"text":"摄影师","checked":false},{"text":"flash","checked":false},{"text":"配音","checked":false},{"text":"GIF","checked":false}]},
+
+  {"keyword":"程序开发",
+    "data":[{"text":"Android","checked":false},{"text":"IOS","checked":false},{"text":"SEO","checked":false},{"text":"HTML5","checked":false},{"text":"微信","checked":false},{"text":"企业建站","checked":false},{"text":"前端开发","checked":false},{"text":"后端开发","checked":false}]}
 ]
 }

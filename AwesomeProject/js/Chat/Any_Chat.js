@@ -3,7 +3,8 @@
  */
 import React from 'react';
 import {
-    Text,View,ListView,TouchableNativeFeedback,Dimensions,ScrollView,StyleSheet,WebView,ToastAndroid,Modal,Image
+    Text,View,ListView,TouchableNativeFeedback,Dimensions,ScrollView,StyleSheet,WebView,ToastAndroid,Modal,Image,ActivityIndicator,Alert,
+TextInput
 } from 'react-native';
 import {boxstyles} from "../Sheetstyle/cssMain"
 import {Global,datastorage} from '../AgainBody/data'
@@ -26,11 +27,27 @@ export default class Chatbottom extends React.Component {
         });
         // 实际的DataSources存放在state中
         this.state = {
-            dataSource: dataSource.cloneWithPages(Global.AnyChat_images)
+            dataSource: dataSource.cloneWithPages(Global.AnyChat_images),
+            data:Global
         }
     }
     componentDidMount () {
-
+        var dataSource = new ViewPager.DataSource({
+            pageHasChanged: (p1, p2) => p1 !== p2,
+        });
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.data=t_Global;
+                aaa.dataSource=dataSource.cloneWithPages(t_Global.AnyChat_images);
+                return aaa
+            })
+        });
     }
     _renderPage(data){
         let _imagepath=data.imagepath;
@@ -46,7 +63,7 @@ export default class Chatbottom extends React.Component {
         this.props.navigation.dispatch(navigateAction1);
         }
         }>
-                <Image source={_imagepath} style={{width:wwidth,height:50}}/>
+                <Image source={_imagepath} style={{width:wwidth,height:80}}/>
             </TouchableNativeFeedback>
         )
     }
@@ -57,17 +74,17 @@ export default class Chatbottom extends React.Component {
                 keyboardShouldPersistTaps='never'
             >
                 <View>
-                    <View style={{height:30,borderBottomWidth:1,borderBottomColor:'#aaa',justifyContent:'center'}}>
-                        <Text>画客圈</Text>
+                    <View style={{height:30,borderBottomWidth:1,borderBottomColor:'#aaa',alignItems:'center',justifyContent:'center'}}>
+                        <Text style={{fontWeight:'bold',color:'#111'}}>画客圈</Text>
                     </View>
                     <ViewPager
-                        style={{height:50}}
+                        style={{height:100}}
                         dataSource={this.state.dataSource}
                         renderPage={this._renderPage.bind(this)}
                         isLoop={true}
                         autoPlay={true}
                     />
-                    <View style={{height:80}}>
+                    <View style={{height:80,flexDirection:'row'}}>
                         <TouchableNativeFeedback onPress={()=>{
 
                     }}>
@@ -75,6 +92,7 @@ export default class Chatbottom extends React.Component {
                                 <Image source={require('../../image/Chat_project.png')} style={styles.topimage}>
                                     <Text style={styles.toptext}>{Global.AnyChat_top[0]}</Text>
                                 </Image>
+                                <Text style={{color:'#111' }}>项目</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
@@ -84,6 +102,7 @@ export default class Chatbottom extends React.Component {
                                 <Image source={require('../../image/Chat_tip.png')} style={styles.topimage}>
                                     <Text style={styles.toptext}>{Global.AnyChat_top[1]}</Text>
                                 </Image>
+                                <Text style={{color:'#111' }}>帖子</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
@@ -93,6 +112,8 @@ export default class Chatbottom extends React.Component {
                                 <Image source={require('../../image/Chat_works.png')} style={styles.topimage}>
                                     <Text style={styles.toptext}>{Global.AnyChat_top[2]}</Text>
                                 </Image>
+                                <Text style={{color:'#111' }}>作品</Text>
+
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback onPress={()=>{
@@ -102,10 +123,13 @@ export default class Chatbottom extends React.Component {
                                 <Image source={require('../../image/Chat_activity.png')} style={styles.topimage}>
                                     <Text style={styles.toptext}>{Global.AnyChat_top[3]}</Text>
                                 </Image>
+                                <Text style={{color:'#111' }}>活动</Text>
+
                             </View>
                         </TouchableNativeFeedback>
                     </View>
                 </View>
+                <ChatContentScreen screenProps={this.props.navigation} data={this.state.data} />
             </ScrollView>
         );
     }
@@ -185,11 +209,101 @@ class ChatContentScreen extends React.Component{
     renderHeader(){
         return (
             <View style={{height: 50, backgroundColor: '#eeeeee', alignItems: 'center', justifyContent: 'center',display:'none'}}>
-                <Text style={{fontWeight: 'bold'}}>This is header</Text>
+                <Text style={{fontWeight: 'bold'}}>最新内容</Text>
             </View>
         );
     }
     renderRow(rowData, sectionID, rowID, highlightRow) {
+
+        switch (rowData.kind){
+            case 'project':{
+                return(
+                    <TheProjectScreen screenProps={this.props.navigation} value={rowData} />
+                )
+            }break;
+            case 'tip':{
+                return(
+                    <TheTipScreen screenProps={this.props.navigation} value={rowData} />
+                )
+            }break;
+            case 'work':{
+                return(
+                    <TheWorkScreen screenProps={this.props.navigation} value={rowData} />
+                )
+            }break;
+            case 'activity':{
+                return(
+                    <TheActivityScreen screenProps={this.props.navigation} value={rowData} />
+                )
+            }break;
+            case 'advertisement':{
+                return(
+                    <TheAdvertisementScreen screenProps={this.props.navigation} value={rowData} />
+                )
+            }break;
+            default:{
+                return(
+                    <View><Text>数据错误！</Text></View>
+                )
+            }
+        }
+    }
+
+    renderFooter() {
+        if(this.state.nomore){
+            return (<TouchableNativeFeedback onPress={()=>{
+                    this._scrollView.scrollTo({y:0});
+                    }}>
+                <View style={{height: 30}}>
+
+                    <Text style={{alignSelf:'center',color:'#ccc'}}>没有更多了</Text></View>
+            </TouchableNativeFeedback>);
+        }
+        return (
+            <View style={{height: 30}}>
+                <ActivityIndicator />
+            </View>
+        );
+    }
+    loadMore() {
+        if(long<1){
+            this.state.nomore=true;
+        }else{
+            for(var i = 0; i < 3; i++) {
+                this.dataSource.push({id:'123123',kind:'project',
+                    send:{name:'洪辉',path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
+                        sex:'1',localtion:'杭州'},kindword:['产品经理','三汇信息']
+                    ,useReady:'<a style={color:red}>[预算：1.5万元]</a><a> 找12312312312321321321212121212121212' +
+                    '1212121212121212121212121212' +'1212121212121212121212121' +
+                    '2121212121212121212121212' +'121212121212121212121212121212121212121212121212121212121</a>',
+                    images:['http://huakewang.b0.upaiyun.com/2016/04/27/20160427190906563685.jpg'],
+                    time:'2017/06/22 15:55:14',
+                    likeNum:['晚高峰','沪电股份','高富帅大地飞歌'],
+                    talkingList:[{sender:'dafsd',to:'ddfas',text:'sdfasdfasdfasdfasd'},
+                        {sender:'dafsd',to:'洪辉',text:'sdfasdfasdfasdfasd'},
+                        {sender:'dafsd',to:'dfas大',text:'sdfasdfasdfasdfasd'}]
+                });
+                long--;
+            }
+            setTimeout(() => {
+                this.setState({
+                    list: this.state.list.cloneWithRows(this.dataSource)
+                });
+            }, 1000);
+        }
+    }
+}
+
+class TheProjectScreen extends  React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            data:this.props.value,
+            talkListData:this.props.value.talkingList,
+        };
+    }
+    render(){
+        var rowData=this.state.data;
         var pathimg=rowData.send.path;
         if(pathimg.indexOf('http')>-1){
             pathimg={uri:pathimg};
@@ -217,8 +331,21 @@ class ChatContentScreen extends React.Component{
         for(var m=0;m<rowData.images.length;m++){
             images.push({uri:rowData.images[m]})
         }
+        var _time=(new Date()).valueOf();
+        var _likeNum='';
+        for(var l=0;l<rowData.likeNum.length;){
+            if(rowData.likeNum[l]==name){
+
+            }
+
+            _likeNum+=<TouchableNativeFeedback onPress={e=>this.props.navigation.dispatch()}>
+                <Text style={{color:'#3E9CED'}} >{rowData.likeNum[l]}</Text>
+            </TouchableNativeFeedback>
+
+        }
+
         return (
-            <View style={{minHeight: 300, backgroundColor: '#fff',padding:5,borderTop:5,borderTopColor:'#eee'}}>
+            <View style={{backgroundColor: '#fff',padding:5,borderTop:5,borderTopColor:'#eee'}}>
                 <View style={{height:50 ,flexDirection:'row',paddingTop:5,paddingBottom:5}}>
                     <Image source={pathimg} style={{height:40,width:40,borderRadius:20,
                     paddingRight:5,}} />
@@ -247,54 +374,209 @@ class ChatContentScreen extends React.Component{
                         <ImageViewer imageUrls={images}/>
                     </Modal>
                 </View>
+                <View style={styles.like_Talk}>
+                    <Text style={{alignSelf:'flex-start'}}>{_time}</Text>
+                    <TouchableNativeFeedback>
+                        <Image source={}  style={{}} />
+                    </TouchableNativeFeedback>
+                    <Text>点赞({rowData.likeNum.length})</Text>
+                    <TouchableNativeFeedback>
+                        <Image source={}  style={{}} />
+                    </TouchableNativeFeedback>
+                    <Text>回复({rowData.talkingList.length})</Text>
+                </View>
+                <View style={styles.talkBoxStyle}>
+                    <Image source={{}}  style={{}} />
+                    <Text>{_likeNum}</Text>
+                    <View>
+                        <TalkBoxScreen value={this.state.talkListData}/>
+                    </View>
+                </View>
+
             </View>
         );
-    }
-
-    renderFooter() {
-        if(this.state.nomore){
-            return (<TouchableNativeFeedback onPress={()=>{
-                    this._scrollView.scrollTo({y:0});
-                    }}>
-                <View style={{height: 30}}>
-
-                    <Text style={{alignSelf:'center',color:'#ccc'}}>没有更多了</Text></View>
-            </TouchableNativeFeedback>);
-        }
-        return (
-            <View style={{height: 30}}>
-                <ActivityIndicator />
-            </View>
-        );
-    }
-    loadMore() {
-        if(long<1){
-            this.state.nomore=true;
-        }else{
-            for(var i = 0; i < 3; i++) {
-                this.dataSource.push({id:'123123',
-                    send:{name:'洪辉',path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',
-                        sex:'1',localtion:'杭州'},kindword:['产品经理','三汇信息']
-                    ,useReady:'<a style={color:red}>[预算：1.5万元]</a><a> 找12312312312321321321212121212121212' +
-                    '1212121212121212121212121212' +'1212121212121212121212121' +
-                    '2121212121212121212121212' +'121212121212121212121212121212121212121212121212121212121</a>',
-                    images:['http://huakewang.b0.upaiyun.com/2016/04/27/20160427190906563685.jpg'],
-                    time:'',
-                    likeNum:['晚高峰','沪电股份','高富帅大地飞歌'],
-                    talkingList:[{sender:'dafsd',to:'ddfas',text:'sdfasdfasdfasdfasd'},
-                        {sender:'dafsd',to:'',text:'sdfasdfasdfasdfasd'},
-                        {sender:'dafsd',to:'dfas大',text:'sdfasdfasdfasdfasd'}]
-                });
-                long--;
-            }
-            setTimeout(() => {
-                this.setState({
-                    list: this.state.list.cloneWithRows(this.dataSource)
-                });
-            }, 1000);
-        }
     }
 }
+class TheTipScreen extends  React.Component {
+    render(){
+        return(
+            <View>
+                <Text>123</Text>
+            </View>
+        )
+    }
+}
+class TheWorkScreen extends  React.Component {
+    render(){
+        return(
+            <View>
+                <Text>123</Text>
+            </View>
+        )
+    }
+}
+class TheActivityScreen extends  React.Component {
+    render(){
+        return(
+            <View>
+                <Text>123</Text>
+            </View>
+        )
+    }
+}
+class TheAdvertisementScreen extends  React.Component {
+    render(){
+        return(
+            <View>
+                <Text>123</Text>
+            </View>
+        )
+    }
+}
+class TalkBoxScreen extends  React.Component {
+    constructor(props) {
+        super(props);
+        var ds=new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.state={
+            talkListShow:'flex',
+            talkListData:this.props.value,
+            dataSource:ds.cloneWithRows([]),
+            talkListBottom:'close',
+            talkInputBoxdefualt:'',
+            islogin:'false',
+            username:'',
+            callBackWord:''
+        };
+    }
+    componentDidMount () {
+        let _length=this.state.talkListData.length;
+        let _data=this.state.talkListData;
+        var ds=new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.islogin=t_Global.islogin;
+                if(_length>5){
+                    let ddd=[_data[0],_data[1],_data[2],_data[3],_data[4]];
+                    aaa.dataSource=ds.cloneWithRows(ddd);
+                }else{
+                    aaa.dataSource=ds.cloneWithRows(_data);
+                    aaa.talkListShow='none';
+                }
+                aaa.username=t_Global.username;
+                return aaa
+            })
+        });
+
+    }
+    callBackSomeone(e){
+
+    }
+    alertLogin(e){
+        Alert.alert(
+            '您还未登录！',
+            [
+                {text: '前往登录', onPress: () => console.log('Ask me later pressed')},
+                {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+            ],
+            { cancelable: false }
+        )
+    }
+    _renderRow(rowData){
+            let _name=this.state.username;
+            let _sender=rowData.sender;
+            let _to=rowData.to;
+            if(_sender==_name){
+                _sender=<Text>我</Text>
+            }else{
+                _sender=<TouchableNativeFeedback
+                    onPress={e=>{
+
+                    }}
+                ><Text style={{color:'#3E9CED'}} >{rowData.sender}</Text></TouchableNativeFeedback>
+            }
+            if(_to==_name){
+                _to=<Text>我</Text>
+            }else{
+                _to=<TouchableNativeFeedback
+                    onPress={e=>{
+
+                    }}
+                ><Text style={{color:'#3E9CED'}}>{rowData.to}</Text></TouchableNativeFeedback>
+            }
+
+            return(
+                <View>
+                    {_sender}
+                    <Text>回复</Text>
+                    {_to}
+                    <TouchableNativeFeedback onPress={e=>{
+                    if(this.state.islogin){
+                        this.callBackSomeone(rowData.sender)
+                    }else{
+                        this.alertLogin(e)
+                    }
+                    }}>
+                        <Text>：{rowData.text}</Text>
+                    </TouchableNativeFeedback>
+                </View>
+            )
+
+    }
+    _renderFooter(){
+        if(this.state.islogin){
+            let ddd="回复："+this.state.talkInputBoxdefualt;
+            return(
+                <View style={{backgroundColor:'#eee'}}>
+                    <TextInput
+                        placeholder={ddd}
+                        style={{flex:1,fontSize:20,paddingLeft:10,paddingRight:10,marginTop:10}}
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        selectTextOnFocus={true}
+                        onChangeText={(text) =>this.setState({callBackWord:text})}
+                    />
+                </View>
+            )
+        }else{
+            return(
+                <View>
+                    <TouchableNativeFeedback onPress={e=>{
+                        console.log("login")
+                    }}>
+                        <Text>登录后才能留言回复</Text>
+                    </TouchableNativeFeedback>
+                </View>
+            )
+        }
+    }
+    render(){
+        return(
+            <ListView
+                dataSource={this.state.dataSource}
+                renderRow={this._renderRow.bind(this)}
+                renderFooter={this._renderFooter.bind(this)}
+            />
+        )
+    }
+}
+
+
+
+const navigateAction1 = NavigationActions.navigate({routeName:'cChatProject'});
+const navigateAction2 = NavigationActions.navigate({routeName:'cChatTip'});
+const navigateAction3 = NavigationActions.navigate({routeName:'Works'});
+const navigateAction4 = NavigationActions.navigate({routeName:'Activity'});
+const navigateAction5 = NavigationActions.navigate({routeName:'Advertisement'});
+
+
+
+
 
 const styles=StyleSheet.create({
     topimage:{
@@ -302,14 +584,20 @@ const styles=StyleSheet.create({
     },
     toptext:{
         backgroundColor:'red',
-        padding:2,
-        borderRadius:5,position:'absolute',top:0,right:0,color:'#fff'
+        fontSize:12,paddingLeft:4,paddingRight:4,
+        borderRadius:10,position:'absolute',top:-1,right:-12,color:'#fff'
     },
-    imagebox:{height:wwidth,},
+    imagebox:{width:wwidth,paddingLeft:10,paddingRight:10,maxHeight:100},
     oneimage:{},
     twoimage:{},
     tfimage:{},
     fsimage:{},
     setimage:{},
+    like_Talk:{
+        flexDirection:'row'
+    },
+    talkBoxStyle:{
+
+    }
 
 });

@@ -3,20 +3,22 @@
  */
 import React from 'react';
 import {
-    Text,Button,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,ListView,TextInput,ToastAndroid
+    Text,View,StyleSheet,Image,TouchableNativeFeedback,ScrollView,ListView,TextInput,ToastAndroid,Dimensions
 } from 'react-native';
-import Checkbox from 'react-native-custom-checkbox';
+import CheckBox from 'react-native-check-box'
 import {Global,datastorage} from '../AgainBody/data'
 import { NavigationActions } from 'react-navigation'
 let listV=require('../AgainBody/skill_data.json');
+import PubSub from 'pubsub-js'
 
 export default class HomeAuthSkillScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: `擅长/专精`,
             headerRight:(<TouchableNativeFeedback
-                onPress={()=>{
-             navigation.dispatch(navigateAction1)
+                onPress={e=>{
+
+             navigation.dispatch(navigateAction1);
             }
             }>
                 <Text style={{color:'#048bef',paddingRight:10}}>确定</Text>
@@ -29,37 +31,7 @@ export default class HomeAuthSkillScreen extends React.Component {
             refresh:1,
             waitShow:'none',
             dataAuth:Global,
-            addWord:''
-        }
-    }
-    componentDidMount () {
-        datastorage.load({
-            key: 'theGlobal',
-            autoSync: true,
-            syncInBackground: true,
-        }).then(ret=>{
-            let t_Global=ret;
-            this.setState((prevState, props) => {
-                let aaa=prevState;
-                aaa.dataAuth=t_Global;
-                return aaa
-            })
-        });
-    }
-    _onTextSubmit(){
-        let aaa=this.state.addWord;
-        let _data=this.state.dataAuth;
-        if(aaa!=undefined&&aaa!=''){
-            _data.auth.skill.push(aaa);
-            datastorage.save({
-                key:'theGlobal',
-                data:_data,expires:null
-            });
-            this.state.theInput.clear();
-            ToastAndroid.show('添加成功！',ToastAndroid.SHORT,ToastAndroid.CENTER);
-            this.setState({addWord:''})
-        }else{
-            ToastAndroid.show('添加的擅长技能不能为空！',ToastAndroid.SHORT,ToastAndroid.CENTER)
+            addWord:'',
         }
     }
     render(){
@@ -67,75 +39,12 @@ export default class HomeAuthSkillScreen extends React.Component {
             <ScrollView keyboardDismissMode='on-drag'
                         keyboardShouldPersistTaps='never'
             >
-                <View>
-                    <Checkbox checked={true}/>
-                    <Text>类型选择</Text>
-                </View>
-                <View>
-                    <Text>手动输入：</Text>
-                    <TextInput
-                        ref={textInput => (this.theInput = textInput)}
-                        placeholder="请输入"
-                        style={{flex:1,fontSize:16,padding:0,justifyContent:'center'}}
-                        underlineColorAndroid="transparent"
-                        autoCorrect={false}
-                        selectTextOnFocus={true}
-                        onChangeText={(text) =>{
-                        this.setState({addWord:text});
-                        }}
-                        onSubmitEditing={
-                            this._onTextSubmit.bind(this)
-                        }
-                    />
-                    <TouchableNativeFeedback onPress={this._onTextSubmit.bind(this)}>
-                        <Text style={styles.blueBtn}>添加</Text>
-                    </TouchableNativeFeedback>
-                </View>
-                <hasSkillList value={this.state.dataAuth.auth.skill} />
                 <SkillList value={listV.skill} />
             </ScrollView>
         )
     }
 }
 
-class hasSkillList extends React.Component {
-    constructor(props) {
-        super(props);
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state = {
-            dataSource: ds.cloneWithRows(this.props.value),
-        };
-    }
-    _renderRow(rowData){
-        return(
-            <View style={{borderRadius:2,borderWidth:1,borderColor:'#eee',alignItems:'center',}}>
-                <Text style={{color:'#111'}}>{rowData}</Text>
-                <Text style={{color:'#eee'}}>|</Text>
-                <Text style={{color:'#111'}}>x</Text>
-
-            </View>
-        )
-    }
-    render(){
-        return(
-            <ListView
-                dataSource={this.state.dataSource}
-                contentContainerStyle={{flexDirection:'row',flexWrap: 'wrap'}}
-                renderHeader={()=>{
-                let listvalue='暂无';
-                if(this.props.value.length>0){
-                    listvalue='已添加:';
-                }
-                return(
-                <View>
-                <Text>{listvalue}</Text>
-                </View>
-                )}}
-                renderRow={this._renderRow.bind(this)}
-            />
-        )
-    }
-}
 class SkillList extends React.Component {
     constructor(props) {
         super(props);
@@ -144,15 +53,14 @@ class SkillList extends React.Component {
             dataSource: ds.cloneWithRows(this.props.value),
         };
     }
-
     _renderRow(rowData){
         let aaa=rowData.data;
         let bbb=rowData.keyword;
         return(
-            <View>
-                <Text style={{color:'#3e9dee',fontSize:16,fontWeight:'bold'}}>{aaa}</Text>
+            <View style={{marginBottom:4}}>
+                <Text style={{color:'#3e9dee',fontSize:18,fontWeight:'bold',marginBottom:4}}>{bbb}</Text>
                 <View style={{borderBottomWidth:1,borderBottomColor:'#eee'}}>
-                    <SkillContentList value={bbb}/>
+                    <SkillContentList value={aaa}/>
                 </View>
             </View>
         )
@@ -167,63 +75,98 @@ class SkillList extends React.Component {
         )
     }
 }
+let aaaa=[];
 class SkillContentList extends React.Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(this.props.value),
-            dataSkill:Global
+            dataSkill:Global,
+            btnsData:this.props.value,
+            dataSource: ds.cloneWithRows([]),
+            chockBoxData:''
         };
     }
     componentDidMount () {
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        var _this=this;
         datastorage.load({
             key: 'theGlobal',
             autoSync: true,
             syncInBackground: true,
         }).then(ret=>{
             let t_Global=ret;
-            this.setState((prevState, props) => {
+            let _btnsData=this.state.btnsData;
+            let _skill=t_Global.auth.skill;
+            for(var i=0;i<_skill.length;i++){
+                for(var j=0;j<_btnsData.length;j++){
+                 if(_skill[i]==_btnsData[j].text){
+                     _btnsData[j].checked=true;
+                 }
+                }
+            }
+            _this.setState((prevState, props) => {
                 let aaa=prevState;
                 aaa.dataSkill=t_Global;
+                aaa.btnsData=_btnsData;
+                aaa.dataSource=ds.cloneWithRows(_btnsData);
                 return aaa
             })
         });
+
     }
-    _myFunction(name,checked){
-        if(checked){
+    _myFunction(e,name,index,id){
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        let choosed=this.state.dataSkill.auth.skill;
+        if(choosed.includes(name)){
             let _data=this.state.dataSkill;
-            let choosed=_data.auth.skill;
-            choosed=choosed.filter(x=>x!=name);
-            _data.auth.skill=choosed;
+            let _choosed=_data.auth.skill;
+            _choosed=choosed.filter(x=>x!=name);
+            _data.auth.skill=_choosed;
             datastorage.save({
                 key:'theGlobal',
                 data:_data,expires:null
-            })
+            });
+            let _btnsData=this.state.btnsData;
+            _btnsData[id].checked=false;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.btnsData=_btnsData;
+                aaa.dataSource=ds.cloneWithRows(_btnsData);
+                return aaa
+            });
         }else{
             let _data=this.state.dataSkill;
-            let choosed=_data.auth.skill;
-            choosed.push(name);
-            _data.auth.skill=choosed;
+            let _choosed=_data.auth.skill;
+            _choosed.push(name);
+            _data.auth.skill=_choosed;
             datastorage.save({
                 key:'theGlobal',
                 data:_data,expires:null
-            })
+            });
+            let _btnsData=this.state.btnsData;
+            _btnsData[id].checked=true;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.btnsData=_btnsData;
+                aaa.dataSource=ds.cloneWithRows(_btnsData);
+                return aaa
+            });
         }
+
     }
-    _renderRow(rowData){
-        let choosed=this.state.dataSkill.auth.skill;
-        let checked=false;
-        if(choosed.indexOf(rowData)>-1){
-            checked=true;
-        }
+    _renderRow(rowData,index,rowID){
+        let _width=Dimensions.get('window').width;
         return(
-            <View>
-                <View>
-                    <Checkbox checked={checked}  style={styles.checkboxstyle} name={rowData}
-                              onChange={(name, checked) => this._myFunction(name, checked).bind(this)}/>/>
-                    <Text>{rowData}</Text>
-                </View>
+            <View style={{width:(_width-10)/3}}>
+                <CheckBox
+                    isChecked={rowData.checked}
+                    onClick={e=>this._myFunction(e,rowData.text,index,rowID)}
+                    rightText={rowData.text}
+                    rightTextStyle={{lineHeight:20}}
+                    checkedImage={<Image source={require('../../image/ic_check_box_blue.png')} />}
+                    unCheckedImage={<Image source={require('../../image/ic_check_box_outline_blue.png')} />}
+                />
             </View>
         )
     }

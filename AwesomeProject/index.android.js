@@ -10,7 +10,6 @@ import {City,dataCitystorage} from './js/AgainBody/dataCity'
 import {SelectionOld,dataSelectstorage} from './js/AgainBody/dataSelect'
 import {upload,dataUpload} from './js/AgainBody/dataShow'
 import { StackNavigator } from 'react-navigation';
-import { NavigationActions } from 'react-navigation'
 import MoreStack from './js/Home/More_Button'
 import FindScreen from './js/Find/FindScreen'
 import ShowScreen from './js/Show/ShowScreen'
@@ -24,12 +23,15 @@ import HomeAuthSkillScreen from './js/Home/HomeAuthSkill'
 import HomeAuthWaitScreen from './js/Home/HomeAuthWait'
 import HomeKindScreen from './js/Home/HomeKind'
 import HomeCityScreen from './js/Home/HomeCity'
-import DesignerScreen from './js/Designer/Designer'
+import DesignerScreen from './js/Designer/designer'
 import WorksScreen from './js/Works/Works'
 import ShowWriteScreen from './js/Show/ShowWrite'
 import Activity from './js/AgainBody/Activity'
 import AdvertisementScreen from './js/AgainBody/Advertisement'
 import WorkScreen from './js/Works/Works'
+import OtherScreen from './js/Self/Other'
+import TheProjectScreen from './js/Chat/cChatProject'
+import TheTipScreen from './js/Chat/cChatTip'
 
 class AwesomeProject extends React.Component{
     render(){
@@ -46,9 +48,12 @@ const App=StackNavigator({
     ShowWrite:{screen:ShowWriteScreen},
     Cloud:{screen:CloudScreen},
     Designer:{screen:DesignerScreen},
+
+    Works:{screen:WorkScreen},
+    Other:{screen:OtherScreen},
     Activity:{screen:Activity},
     Advertisement:{screen:AdvertisementScreen},
-    Works:{screen:WorkScreen},
+
     pHomeLocal:{screen:HomeLocalScreen},
     pHomeCitySelect:{screen:HomeCityScreen},
     pHomeSelect:{screen:HomeSelectScreen},
@@ -56,8 +61,10 @@ const App=StackNavigator({
     pHomeAuth:{screen:HomeAuthScreen},
     pHomeAuthSkill:{screen:HomeAuthSkillScreen},
     pHomeAuthWait:{screen:HomeAuthWaitScreen},
-    pHomeKind:{screen:HomeKindScreen}
+    pHomeKind:{screen:HomeKindScreen},
 
+    cChatProject:{screen:TheProjectScreen},
+    cChatTip:{screen:TheTipScreen},
 
 });
 

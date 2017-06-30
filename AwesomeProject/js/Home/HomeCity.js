@@ -8,6 +8,7 @@ import {
 import { NavigationActions } from 'react-navigation'
 import {boxstyles} from '../Sheetstyle/cssMain'
 import {City,dataCitystorage} from '../AgainBody/dataCity'
+import {Global,datastorage} from '../AgainBody/data'
 import PubSub from 'pubsub-js'
 let listV=require('../AgainBody/area_tb_da.json');
 let keywordValue=[
@@ -44,7 +45,7 @@ export default class LocalselectScreen extends React.Component {
         super(props);
         this.state = {
             keyword:'',
-            selectKey:''
+            selectKey:'',
         }
     }
     componentDidMount () {
@@ -125,10 +126,36 @@ class KeywordList extends React.Component {
             }
         }
         this.state = {
-            dataSource: ds.cloneWithRows(datadata)
+            dataSource: ds.cloneWithRows(datadata),
+            data:Global,
+            dataCity:City,
         };
     }
     componentDidMount () {
+        dataCitystorage.load({
+            key: 'theCity',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_City=ret;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.dataCity=t_City;
+                return aaa
+            })
+        });
+        datastorage.load({
+            key: 'theGlobal',
+            autoSync: true,
+            syncInBackground: true,
+        }).then(ret=>{
+            let t_Global=ret;
+            this.setState((prevState, props) => {
+                let aaa=prevState;
+                aaa.data=t_Global;
+                return aaa
+            })
+        });
         this.SKeyval = PubSub.subscribe('KKeyword', function (topic, product) {
                 datadata=[];
                 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -160,20 +187,27 @@ class KeywordList extends React.Component {
     }
     _renderRow(rowData){
         var _this=this;
+        var _City=this.state.dataCity;
+        var _data=this.state.data;
         return (
             <TouchableNativeFeedback onPress={
             (event)=>{
-            if(City.usedcity.indexOf(rowData.city)<0){
-            City.usedcity.unshift(rowData.city)
+            if(_City.usedcity.indexOf(rowData.city)<0){
+            _City.usedcity.unshift(rowData.city)
             }
-            City.theCity=rowData.city;
-            console.log(rowData.city,City);
             dataCitystorage.save({
             key: 'theCity',
-            data:City
+            data:_City
             });
+            if(_data.city!=rowData.city){
+                _data.city=rowData.city;
+                _data.aaoldlocal=[];
+                datastorage.save({
+                key:'theGlobal',
+                data:_data
+                });
+            }
             _this.props.screenProps.dispatch(navigateAction1);
-
             }
             }>
                 <View style={{height:35,backgroundColor:'#fff',paddingLeft:10}}>
@@ -184,65 +218,69 @@ class KeywordList extends React.Component {
 
     }
     _renderHeader(){
-        let hhh=City.usedcity;
+        let _City=this.state.dataCity;
+        let hhh=_City.usedcity;
         let _this=this;
+        var _data=this.state.data;
         return(
             <View style={{flex:1 ,flexDirection:'row',padding:5}}>
                 <TouchableNativeFeedback onPress={
             (event)=>{
-                City.theCity=hhh[0];
-                dataCitystorage.save({
-                key: 'theCity',
-                data:City
+                _data.city=hhh[0];
+                _data.aaoldlocal=[];
+                datastorage.save({
+                key:'theGlobal',
+                data:_data
                 });
                 _this.props.screenProps.dispatch(navigateAction1);
-
             }
             }>
-                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,minWidth:30,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[0]==undefined?'none':'flex'}}>
+                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[0]==undefined?'none':'flex'}}>
                         <Text style={{fontSize:16,lineHeight:20,alignSelf:'center'}}>{hhh[0]}</Text>
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                City.theCity=hhh[1];
-                dataCitystorage.save({
-                key: 'theCity',
-                data:City
+                _data.city=hhh[1];
+                _data.aaoldlocal=[];
+                datastorage.save({
+                key:'theGlobal',
+                data:_data
                 });
-
                 _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
-                    <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[1]==undefined?'none':'flex'}}>
+                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,minWidth:30,maxWidth:70,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[1]==undefined?'none':'flex'}}>
                         <Text style={{fontSize:16,lineHeight:20,alignSelf:'center'}}>{hhh[1]}</Text>
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                City.theCity=hhh[2];
-                dataCitystorage.save({
-                key: 'theCity',
-                data:City
+                _data.city=hhh[2];
+                _data.aaoldlocal=[];
+                datastorage.save({
+                key:'theGlobal',
+                data:_data
                 });
                 _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
-                    <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[2]==undefined?'none':'flex'}}>
+                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[2]==undefined?'none':'flex'}}>
                         <Text style={{fontSize:16,lineHeight:20,alignSelf:'center'}}>{hhh[2]}</Text>
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback onPress={
             ()=>{
-                City.theCity=hhh[3];
-                dataCitystorage.save({
-                key: 'theCity',
-                data:City
+                 _data.city=hhh[3];
+                _data.aaoldlocal=[];
+                datastorage.save({
+                key:'theGlobal',
+                data:_data
                 });
                 _this.props.screenProps.dispatch(navigateAction1);
             }
             }>
-                    <View style={{flex:1,backgroundColor:'#fff',padding:2,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[3]==undefined?'none':'flex'}}>
+                    <View style={{backgroundColor:'#fff',padding:2,marginRight:4,minWidth:30,maxWidth:50,borderWidth:1,borderColor:'#eee',borderRadius:2,display:hhh[3]==undefined?'none':'flex'}}>
                         <Text style={{fontSize:16,lineHeight:20,alignSelf:'center'}}>{hhh[3]}</Text>
                     </View>
                 </TouchableNativeFeedback>
@@ -305,6 +343,6 @@ const navigateAction1 = NavigationActions.reset({
     index: 1,
     actions: [
         NavigationActions.navigate({ routeName: 'Box'}),
-        NavigationActions.navigate({ routeName: 'pHomeLocal',params:{city:City.theCity,local:''}})
+        NavigationActions.navigate({ routeName: 'pHomeLocal'})
     ]
 });
