@@ -9,7 +9,6 @@ import CheckBox from 'react-native-check-box'
 import {Global,datastorage} from '../AgainBody/data'
 import { NavigationActions } from 'react-navigation'
 let listV=require('../AgainBody/skill_data.json');
-import PubSub from 'pubsub-js'
 
 export default class HomeAuthSkillScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {

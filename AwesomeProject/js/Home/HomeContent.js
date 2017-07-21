@@ -7,12 +7,15 @@ import {
     ListView,
 } from 'react-native';
 import {PullList} from 'react-native-pull';
-import ImageViewer from 'react-native-image-zoom-viewer';
 let long=30;
 import { NavigationActions } from 'react-navigation'
+import HomeHeaderScreen from './HomeHeader'
 
 
 export default class HomeContent extends Component {
+    static navigationOptions = ({ navigation }) => ({
+        header:null
+    });
     constructor(props) {
         super(props);
         this.dataSource = [];
@@ -24,7 +27,6 @@ export default class HomeContent extends Component {
         this.renderFooter = this.renderFooter.bind(this);
         this.loadMore = this.loadMore.bind(this);
         this.topIndicatorRender = this.topIndicatorRender.bind(this);
-
     }
 
     onPullRelease(resolve) {
@@ -86,14 +88,11 @@ export default class HomeContent extends Component {
 
     renderHeader() {
         return (
-            <View style={{height: 50, backgroundColor: '#eeeeee', alignItems: 'center', justifyContent: 'center',display:'none'}}>
-                <Text style={{fontWeight: 'bold'}}>This is header</Text>
-            </View>
+            <HomeHeaderScreen screenProps={this.props.screenProps} />
         );
     }
 
     renderRow(rowData, sectionID, rowID, highlightRow) {
-        console.log(typeof (rowData.keyword));
         var dddlist=String(rowData.keyword).split(",");
         var _sex=String(rowData.sex);
         _sex=_sex==0?require('../../image/man.png'):require('../../image/women.png');

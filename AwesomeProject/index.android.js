@@ -15,6 +15,8 @@ import FindScreen from './js/Find/FindScreen'
 import ShowScreen from './js/Show/ShowScreen'
 import CloudScreen from './js/Cloud/CloudScreen'
 import Main from './js/AgainBody/main'
+import ImageBox from './js/AgainBody/ImageBox'
+
 import HomeLocalScreen from './js/Home/HomeLocal'
 import HomeSelectScreen from './js/Home/HomeSelect'
 import HomeSelectResultScreen from './js/Home/HomeSelectResult'
@@ -30,13 +32,18 @@ import Activity from './js/AgainBody/Activity'
 import AdvertisementScreen from './js/AgainBody/Advertisement'
 import WorkScreen from './js/Works/Works'
 import OtherScreen from './js/Self/Other'
-import TheProjectScreen from './js/Chat/cChatProject'
-import TheTipScreen from './js/Chat/cChatTip'
+import TheChatProject from './js/Chat/ChatProject'
+import TheTipProject from './js/Chat/ChatTip'
+import TheWorksScreen from './js/Chat/ChatWorks'
+import TheAdvertisementScreen from './js/Chat/ChatAdvertisement'
+import ChatProjectPage from './js/Chat/ChatProjectPage'
+import ChatTipPage from './js/Chat/ChatTipPage'
+
 
 class AwesomeProject extends React.Component{
     render(){
         return(
-            <App/>
+            <App />
         )
     }
 }
@@ -48,6 +55,7 @@ const App=StackNavigator({
     ShowWrite:{screen:ShowWriteScreen},
     Cloud:{screen:CloudScreen},
     Designer:{screen:DesignerScreen},
+    ImageBox:{screen:ImageBox},
 
     Works:{screen:WorkScreen},
     Other:{screen:OtherScreen},
@@ -62,9 +70,12 @@ const App=StackNavigator({
     pHomeAuthSkill:{screen:HomeAuthSkillScreen},
     pHomeAuthWait:{screen:HomeAuthWaitScreen},
     pHomeKind:{screen:HomeKindScreen},
-
-    cChatProject:{screen:TheProjectScreen},
-    cChatTip:{screen:TheTipScreen},
+    cChatProject:{screen:TheChatProject},
+    cChatTip:{screen:TheTipProject},
+    cChatWorks:{screen:TheWorksScreen},
+    cChatAdvertisement:{screen:TheAdvertisementScreen},
+    cChatTipPage:{screen:ChatTipPage},
+    cChatProjectPage:{screen:ChatProjectPage},
 
 });
 

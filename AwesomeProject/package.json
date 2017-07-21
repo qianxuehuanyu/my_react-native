@@ -8,12 +8,11 @@
   },
   "dependencies": {
     "react": "16.0.0-alpha.12",
-    "react-native": "0.45.1",
+    "react-native": "0.46.3",
     "react-native-check-box": "^1.0.4",
     "react-native-flexi-radio-button": "^0.2.0",
     "react-native-image-crop-picker": "^0.13.1",
     "react-native-image-pan-zoom": "^2.0.4",
-    "react-native-image-zoom-viewer": "^2.0.5",
     "react-native-pull": "^2.0.2",
     "react-native-storage": "^0.2.1",
     "react-native-viewpager": "^0.2.13",
@@ -23,8 +22,8 @@
     "babel-jest": "20.0.3",
     "babel-preset-react-native": "2.0.0",
     "jest": "20.0.4",
-    "react-test-renderer": "16.0.0-alpha.12",
-    "pubsub-js": "^1.5.6"
+    "pubsub-js": "^1.5.6",
+    "react-test-renderer": "16.0.0-alpha.12"
   },
   "jest": {
     "preset": "react-native"

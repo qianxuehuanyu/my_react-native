@@ -1,50 +1,16 @@
 /**
- * Created by admin on 2017/5/4.
+ * Created by admin on 2017/5/3.
  */
 import React from 'react';
 import {
-    View,StyleSheet,Text,Dimensions,
-    Modal,Image,TouchableNativeFeedback
+    Text,Button,View,StyleSheet,Image,Dimensions,TouchableNativeFeedback,ActivityIndicator,ScrollView,FlatList
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
-
 import {boxstyles} from "../Sheetstyle/cssMain"
-import ImageZoom from 'react-native-image-pan-zoom';
+import {Global,datastorage} from '../AgainBody/data'
 
-export default class SelfScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => ({
-        header:null
-    });
-    render() {
-        return (
-            <View style={{flex:1}}>
-                <View style={{flex:1}}>
-                    <Text>个人中心·header</Text>
-                </View>
-
-                <View style={{flex:1}}>
-                    <Text>list</Text>
-                    <Text>list</Text>
-                    <Text>list</Text>
-                    <Text>list</Text>
-                    <Text>list</Text>
-                    <Text>list</Text>
-                </View>
-                <TouchableNativeFeedback onPress={e=>{
-                this.props.screenProps.dispatch(navigateAction);
-                }}>
-                    <Image style={{width:200, height:200}}
-                           source={{uri:'http://v1.qzone.cc/avatar/201407/07/00/24/53b9782c444ca987.jpg!200x200.jpg'}}/>
-                </TouchableNativeFeedback>
-            </View>
-        );
-    }
-}
-
-const navigateAction = NavigationActions.navigate({routeName: 'ImageBox'});
-
-class HomeHeaderScreen extends React.Component {
+export default class HomeHeaderScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -60,6 +26,7 @@ class HomeHeaderScreen extends React.Component {
             show:'none',
             selectkeyword:''
         };
+        this._renderRow=this._renderRow.bind(this);
     }
     componentDidMount () {
         datastorage.load({
@@ -151,26 +118,25 @@ class HomeHeaderScreen extends React.Component {
             }
         }
         return(
-            <View style={{flex:1}}>
-
+            <View pointerEvents='auto' style={{flex:1}}>
                 <View style={{height:height,position:'relative',justifyContent:'center'}}>
                     <Image style={styles.headerimg} source={require('../../image/shouye_header.png')}/>
                     <View style={styles.headertop}>
-                        <TouchableNativeFeedback onPress={(event)=>{
-                this.props.screenProps.dispatch(navigateAction1);}}>
+                        <TouchableNativeFeedback onPress={e=>{
+                            this.props.screenProps.dispatch(navigateAction1);}}>
                             <View style={styles.headerLocal}>
                                 <Image source={require('../../image/local.png')} style={styles.headericonLocal}/>
                                 <Text style={styles.headerLT}>{Lddd}...</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback
-                            onPress={this._goToAuth.bind(this)}
+                            onPress={e=>this._goToAuth(e)}
                         >
                             <View style={[styles.headerLocalRight,{right:35}]}>
                                 <Image source={require('../../image/select.png')} style={styles.headericon}/>
                             </View>
                         </TouchableNativeFeedback>
-                        <TouchableNativeFeedback onPress={()=>{
+                        <TouchableNativeFeedback onPress={(e)=>{
                         this.props.screenProps.dispatch(navigateAction3);
                         }}>
                             <View style={styles.headerLocalRight}>
@@ -184,7 +150,7 @@ class HomeHeaderScreen extends React.Component {
                         <View style={{justifyContent:'center',margin:5}}>
                             <TouchableNativeFeedback
                                 delayPressIn={500}
-                                onPress={this.onbtnList.bind(this)}
+                                onPress={this.onbtnList}
                             >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[this.state.sbKind[4]][1]}/>
 
@@ -193,8 +159,6 @@ class HomeHeaderScreen extends React.Component {
                         </View>
                         <View style={[this.state.btnListKind[0],styles.btnlistkind]}>
                             <TouchableNativeFeedback
-                                onPress={this.onbtnList.bind(this)}
-                                onPress={this.change_sbKind.bind(this)}
                                 onPress={e=>{this.onbtnList(e);this.change_sbKind(e,0)}}
                             >
                                 <Image style={styles.btnlistimg} source={this.state.sbKind[0][1]}/></TouchableNativeFeedback>
@@ -229,7 +193,7 @@ class HomeHeaderScreen extends React.Component {
                                     extraData={this.state}
                                     renderItem={item=>this._renderRow(item)}
                                 />
-                                <TouchableNativeFeedback onPress={e=>{
+                                <TouchableNativeFeedback onPress={()=>{
                             this.props.screenProps.dispatch(navigateAction4);}}>
                                     <View style={{justifyContent:'center',margin:5}}>
                                         <View>
@@ -246,3 +210,59 @@ class HomeHeaderScreen extends React.Component {
         )
     }
 }
+const navigateAction2 = NavigationActions.navigate({routeName: 'pHomeSelect'});
+const navigateAction3 = NavigationActions.navigate({routeName: 'pHomeAuth'});
+const navigateAction4 = NavigationActions.navigate({routeName: 'pHomeKind'});
+
+let width=Dimensions.get('window').width;
+let height=width/639*256;
+const styles=StyleSheet.create({
+    headerimg:{
+        width:width,flex:1
+    },
+    headertop:{
+        position:'absolute',
+        height:30,
+        top:0,left:0,right:0
+    },
+    headerLocal:{alignSelf:'center',
+        width:170,height:30,
+        position:'relative'
+    },
+    headerLocalRight:{
+        alignSelf:'flex-end',width:30,height:30,top:0,position:'absolute'
+    },
+    headerLI:{
+        position:'absolute',lineHeight:30,fontSize:20
+    },
+    headerLT:{
+        position:'absolute',lineHeight:27,marginLeft:18,
+        fontSize:18,color:'#ddd',width:140,height:30
+    },
+    headerbtnlist:{
+        position:'absolute',
+        height:90,
+        top:30,left:0,right:0,
+        flexDirection: 'row',justifyContent: 'space-between',
+    },
+    headerbtns:{
+        flex:1,justifyContent: 'center',
+    },
+    btnlistimg:{
+        width:50,height:50,alignSelf:'center'
+    },
+    btnlisttext:{
+        color:'#eee',alignSelf:'center'
+    },
+    headericonLocal:{
+        width:18,height:18,top:6
+    },
+    headericon:{
+        width:26,height:26,top:2
+    },
+    btnlistkind:{
+        position:'absolute',backgroundColor:'rgba(0,0,0,0.5)',
+        borderRadius:50,paddingTop:5,paddingBottom:5,paddingLeft:5,paddingRight:5,
+        top:5.5,zIndex:100
+    },
+});

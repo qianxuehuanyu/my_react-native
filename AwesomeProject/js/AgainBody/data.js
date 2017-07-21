@@ -26,9 +26,9 @@ const datastorage =new Storage({
     // 或是在任何时候，直接对storage.sync进行赋值修改
     sync: {theGlobal(){
         return {
-            islogin:true,
             username:'qianxuehuanyu',
             local: '滨江区长河路351号dfasdf',
+            islogin:true,
             city:'杭州',
             selectKeyword:'',
             art:['名片','海报','画册','所装','标识','名片','海报','画册','所装','标识'],
@@ -51,15 +51,14 @@ const datastorage =new Storage({
                 ,{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/27/20160427203805857517.jpg',href:'http://www.huakewang.com/'}
                 ,{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/26/20160426081736600936.jpg',href:'http://www.huakewang.com/'}],
             AnyChat_top:[123,123,123,123],
+            selectkeyword:'',
             selectbtns:[
-                ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-                ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-                ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-                ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2],
-                ['互联网设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-                ['产品设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-                ['空间设计',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-                ['虚拟现实',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2]
+                ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png')],
+                ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
+                ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png')],
+                ['产品设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
+                ['空间设计',require('../../image/KB_video1.png'),require('../../image/KB_video2.png')],
+                ['虚拟现实',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png')]
             ]
         }
     }}
@@ -77,6 +76,7 @@ const datastorage =new Storage({
 // 如果你在某处调用storage报错未定义
 // 请检查global.storage = storage语句是否确实已经执行过了
 let Global={
+    islogin:true,
     username:'qianxuehuanyu',
     local: '滨江区长河路351号dfasdf',
     city:'杭州',
@@ -102,14 +102,11 @@ let Global={
         ,{imagepath:'http://huakewang.b0.upaiyun.com/2016/04/26/20160426081736600936.jpg',href:'http://www.huakewang.com/'}],
     AnyChat_top:[123,123,123,'999+'],
     selectbtns:[
-        ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-        ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-        ['多媒体',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-        ['程序设计',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2],
-        ['互联网设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png'),2],
-        ['产品设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png'),2],
-        ['空间设计',require('../../image/KB_video1.png'),require('../../image/KB_video2.png'),2],
-        ['虚拟现实',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png'),2]
+        ['品牌设计',require('../../image/KB_logo1.png'),require('../../image/KB_logo2.png')],
+        ['网页设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
+        ['产品设计',require('../../image/KB_internet1.png'),require('../../image/KB_internet2.png')],
+        ['空间设计',require('../../image/KB_video1.png'),require('../../image/KB_video2.png')],
+        ['虚拟现实',require('../../image/KB_coding1.png'),require('../../image/KB_coding2.png')]
     ]
 };
 datastorage.load({
