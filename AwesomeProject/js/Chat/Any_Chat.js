@@ -11,8 +11,6 @@ import {Chat,dataChatstorage} from '../AgainBody/dataChat'
 import { NavigationActions } from 'react-navigation'
 import ViewPager  from 'react-native-viewpager'
 var wwidth=Dimensions.get('window').width;
-import {PullList} from 'react-native-pull';
-let long=100;
 import ChatContentScreen from './ChatContent'
 
 export default class ChatScreen extends React.Component {
@@ -75,7 +73,7 @@ export default class ChatScreen extends React.Component {
                     <View style={{height:30,borderBottomWidth:1,borderBottomColor:'#aaa',alignItems:'center',justifyContent:'center'}}>
                         <Text style={{fontWeight:'bold',color:'#111'}}>画客圈</Text>
                     </View>
-                    <View>
+                    <View style={{height:100}}>
                     <ViewPager
                         style={{height:100}}
                         dataSource={this.state.dataSource}
@@ -127,8 +125,9 @@ export default class ChatScreen extends React.Component {
                             </View>
                         </TouchableNativeFeedback>
                     </View>
-
-                    <ChatContentScreen screenProps={this.props.screenProps} userlogin={_username} />
+                    <View style={{flex:1}}>
+                        <ChatContentScreen screenProps={this.props.screenProps} userlogin={_username} />
+                    </View>
             </View>
         );
     }

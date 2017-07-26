@@ -6,7 +6,6 @@ import {
     Text,View,StyleSheet,Image,TouchableNativeFeedback,Button,TouchableHighlight
 } from 'react-native';
 import {SimpleApp} from '../AgainBody/navigator';
-import {boxstyles} from "../Sheetstyle/cssMain";
 import PubSub from 'pubsub-js'
 import { NavigationActions } from 'react-navigation'
 

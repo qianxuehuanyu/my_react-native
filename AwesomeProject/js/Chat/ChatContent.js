@@ -12,7 +12,7 @@ import { NavigationActions } from 'react-navigation'
 import ViewPager  from 'react-native-viewpager'
 var wwidth=Dimensions.get('window').width;
 import {PullList} from 'react-native-pull';
-let long=100;
+let Chatlong=50;
 import ChatOnPressFL from './ChatOnPressFL'
 import ChatNoPressFL from './ChatNoPressFL'
 
@@ -20,8 +20,9 @@ export default class ChatContentScreen extends React.Component{
     constructor(props) {
         super(props);
         this.dataSource = [];
+        var ds=new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            list: (new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})).cloneWithRows(this.dataSource),
+            list: ds.cloneWithRows(this.dataSource),
         };
         this.renderHeader = this.renderHeader.bind(this);
         this.renderRow = this.renderRow.bind(this);
@@ -29,16 +30,21 @@ export default class ChatContentScreen extends React.Component{
         this.loadMore = this.loadMore.bind(this);
         this.topIndicatorRender = this.topIndicatorRender.bind(this);
     }
+    componentWillUnmount() {
+        this.timer && clearTimeout(this.timer);
+        this.timer1 && clearTimeout(this.timer1);
+        this.timer2 && clearTimeout(this.timer2);
+    }
     onPullRelease(resolve) {
         //do something
-        setTimeout(() => {
+        this.timer=setTimeout(() => {
             resolve();
         }, 3000);
     }
     topIndicatorRender(pulling, pullok, pullrelease) {
         const hide = {position: 'absolute', left: -500,opacity:0};
         const show = {position: 'relative', left: 0,opacity:1};
-        setTimeout(() => {
+        this.timer1=setTimeout(() => {
             if (pulling) {
                 this.txtPulling && this.txtPulling.setNativeProps({style: show});
                 this.txtPullok && this.txtPullok.setNativeProps({style: hide});
@@ -52,7 +58,7 @@ export default class ChatContentScreen extends React.Component{
                 this.txtPullok && this.txtPullok.setNativeProps({style: hide});
                 this.txtPullrelease && this.txtPullrelease.setNativeProps({style: show});
             }
-        }, 1);
+        }, 200);
         return (
             <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 60}}>
                 <ActivityIndicator size="small" color="gray" />
@@ -66,20 +72,20 @@ export default class ChatContentScreen extends React.Component{
         return (
             <View style={{flex:1}}>
                 <TouchableNativeFeedback onPress={
-                ()=>{
-                this._scrollView.scrollTop({animated:true});
+                e=>{
+                this._scrollView.scrollTo({x:0,y:0,animated:true});
                 }
                 }>
                     <Image source={require('../../image/backtop.png')} style={{width:30,height:30,position:'absolute',bottom:10,right:10}}/>
                 </TouchableNativeFeedback>
                 <PullList
                     ref={(scrollView) => { this._scrollView = scrollView; }}
-                    style={{flex:1}}
+                    style={{}}
                     onPullRelease={this.onPullRelease} topIndicatorRender={this.topIndicatorRender} topIndicatorHeight={60}
                     renderHeader={this.renderHeader}
                     dataSource={this.state.list}
                     pageSize={5}
-                    initialListSize={5}
+                    initialListSize={1}
                     renderRow={this.renderRow}
                     onEndReached={this.loadMore}
                     onEndReachedThreshold={30}
@@ -97,11 +103,12 @@ export default class ChatContentScreen extends React.Component{
     }
     renderRow(rowData, sectionID, rowID, highlightRow) {
         let _username=this.props.username;
-        let ddd;
         let _kind=rowData.kind;
-        if(rowData.kind=='project'){
+        if(_kind=='project'){
             return (
-                <TheProjectScreen screenProps={this.props.screenProps} value={[rowData,_username]} />
+                <View>
+                    <TheProjectScreen screenProps={this.props.screenProps} value={[rowData,_username]} />
+                </View>
             )
         }else{
             return(
@@ -110,38 +117,13 @@ export default class ChatContentScreen extends React.Component{
                 </View>
             )
         }
-        //switch (rowData.kind){
-        //    case 'project':{
-        //        ddd= <TheProjectScreen screenProps={this.props.screenProps} value={[rowData,_username]} />
-        //
-        //    }break;
-        //    case 'tip':{
-        //        ddd= <TheTipScreen screenProps={this.props.screenProps} userlogin={_username} value={rowData} />
-        //
-        //    }break;
-        //    case 'work':{
-        //        ddd= <TheWorkScreen screenProps={this.props.screenProps} userlogin={_username} value={rowData} />
-        //    }break;
-        //    case 'activity':{
-        //        ddd= <TheActivityScreen screenProps={this.props.screenProps} userlogin={_username} value={rowData} />
-        //    }break;
-        //    case 'advertisement':{
-        //        ddd= <TheAdvertisementScreen screenProps={this.props.screenProps} userlogin={_username} value={rowData} />
-        //    }break;
-        //    default:{
-        //        return <View><Text>数据错误！</Text></View>
-        //
-        //    }
-        //}
-
     }
     renderFooter() {
         if(this.state.nomore){
             return (<TouchableNativeFeedback onPress={()=>{
-                    this._scrollView.scrollTo({y:0});
+                    this._scrollView.scrollTo({x:0,y:0,animated:true});
                     }}>
                 <View style={{height: 30}}>
-
                     <Text style={{alignSelf:'center',color:'#ccc'}}>没有更多了</Text></View>
             </TouchableNativeFeedback>);
         }
@@ -152,12 +134,12 @@ export default class ChatContentScreen extends React.Component{
         );
     }
     loadMore() {
-        if(long<1){
-            this.state.nomore=true;
+        if(Chatlong<1){
+            this.setState({nomore:true});
         }else{
             this.dataSource.push({id:'1234123',kind:'project',
                 send:{name:'洪辉',path:'https://avatars0.githubusercontent.com/u/22440637?v=3&s=460',keyMark:'4.9',keyMark_number:'20',sex:'1',localtion:'杭州',kindword:['产品经理','三汇信息']}
-                ,useReady:'<a style={color:red}>[预算：1.5万元]</a><a> 找12312312312321321321212121212121212' +
+                ,useReady:'<a style={color:#ffe87c}>[预算：1.5万元]</a><a> 找12312312312321321321212121212121212' +
                 '1212121212121212121212121212' +'1212121212121212121212121' +
                 '2121212121212121212121212' +'121212121212121212121212121212121212121212121212121212121</a>',
                 images:['http://huakewang.b0.upaiyun.com/2016/04/27/20160427190906563685.jpg'],
@@ -168,10 +150,11 @@ export default class ChatContentScreen extends React.Component{
                     {sender:'dafsd',to:'洪辉',text:'sdfasdfasdfasdfasd'},
                     {sender:'dafsd',to:'dfas大',text:'sdfasdfasdfasdfasd'}]
             });
-            long--;
-            setTimeout(() => {
+            Chatlong--;
+            this.timer2=setTimeout(() => {
+                var ds=new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
                 this.setState({
-                    list: this.state.list.cloneWithRows(this.dataSource)
+                    list: ds.cloneWithRows(this.dataSource)
                 });
             }, 1000);
         }
@@ -282,18 +265,21 @@ class TheProjectScreen extends  React.Component {
         var _lN_RD=String(rowData.likeNum).split(',');
         let talkingList=rowData.talkingList;
         let _talkingList=Array.from(talkingList);
+        let _likeNumSHOW=_lN_RD.length>0?'flex':'none';
         let navigateAction1 = NavigationActions.navigate({routeName:'cChatProjectPage',params:{id:rowData.id}});
+        let ddd1=_lN_RD.length>0?'('+_lN_RD.length+')':' ';
+        let ddd2=_talkingList.length>0?'('+_talkingList.length+')':' ';
         return (
             <View style={{backgroundColor: '#fff',padding:5,borderTop:5,borderTopColor:'#eee'}}>
                 <View style={{height:50 ,flexDirection:'row',paddingTop:5,paddingBottom:5}}>
                     <Image source={pathimg} style={{height:40,width:40,borderRadius:20,
                     paddingRight:5}} />
                     <View style={{flex:1}}>
-                        <View style={{flexDirection:'row'}}>
+                        <View style={{flexDirection:'row',flex:1}}>
                             <Text>{rowData.send.name}</Text>
                             <Image source={sex[1]} style={{width:20,height:20,display:sex[0]}}  />
                         </View>
-                        <View>
+                        <View style={{flex:1,overflow:'hidden'}}>
                             <ChatNoPressFL value={[_text,{color:'#999',fontSize:14,}]}/>
                         </View>
                     </View>
@@ -321,7 +307,7 @@ class TheProjectScreen extends  React.Component {
                     }}>
                         <View style={{flexDirection:'row'}}>
                         <Image source={_lickImage}  style={{width:20,height:20}} />
-                        <Text style={{color:'#3E9CED'}}>点赞({rowData.likeNum.length})</Text>
+                        <Text style={{color:'#3E9CED'}}>点赞{ddd1}</Text>
                         </View>
                     </TouchableNativeFeedback>
                     <TouchableNativeFeedback onPress={e=>{
@@ -329,13 +315,13 @@ class TheProjectScreen extends  React.Component {
                     }}>
                         <View style={{flexDirection:'row'}}>
                         <Image source={require('../../image/pinglun.png')}  style={{width:20,height:20}} />
-                        <Text style={{color:'#3E9CED'}}>评论({rowData.talkingList.length})</Text>
+                        <Text style={{color:'#3E9CED'}}>评论{ddd2}</Text>
                         </View>
                     </TouchableNativeFeedback>
                 </View>
                 <View style={styles.talkBoxStyle}>
-                    <View>
-                        <Text style={{numberOfLines:2}}><ChatOnPressFL value={[_lN_RD,{color:'#3E9CED',fontSize:14,maringRight:4}]}/></Text>
+                    <View style={{display:_likeNumSHOW}}>
+                        <ChatOnPressFL value={_lN_RD}/>
                     </View>
                 </View>
                 <TalkBoxScreen value={[_talkingList,rowData.id,rowData.send.name]} />
@@ -641,6 +627,7 @@ class TheAdvertisementScreen extends  React.Component {
 class TalkBoxScreen extends  React.Component {
     constructor(props) {
         super(props);
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={
             talkListShow:'flex',
             talkListData:this.props.value[0],
@@ -653,6 +640,7 @@ class TalkBoxScreen extends  React.Component {
             id:this.props.value[1],
             sendername:this.props.value[2],
             userLoign:undefined,
+            dataSource:ds.cloneWithRows([]),
         };
     }
     focusNextField = (e,theField) => {
@@ -797,12 +785,11 @@ class TalkBoxScreen extends  React.Component {
         }
     }
     render(){
-        console.log(this.state.talkListData);
         return(
-            <FlatList
-                data={this.state.talkListData}
-                renderItem={({item})=>this._renderRow(item)}
-                ListFooterComponent={this._renderFooter}
+            <ListView
+                dataSource={this.state.dataSource}
+                renderRow={(rowData) => this._renderRow(rowData)}
+                renderFooter={e=>this._renderFooter}
             />
         )
     }

@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { NavigationActions } from 'react-navigation'
-import {boxstyles} from "../Sheetstyle/cssMain"
 import {Global,datastorage} from '../AgainBody/data'
 
 export default class HomeHeaderScreen extends React.Component {
@@ -24,7 +23,8 @@ export default class HomeHeaderScreen extends React.Component {
             btnListKind:[{display:'none'},{display:'flex'}],
             dataLocal:Global.local,
             show:'none',
-            selectkeyword:''
+            selectkeyword:'',
+            heightChange:this.props.value
         };
         this._renderRow=this._renderRow.bind(this);
     }
@@ -44,6 +44,11 @@ export default class HomeHeaderScreen extends React.Component {
                 return aaa
             })
         });
+    }
+    componentWillUnmount() {
+        this.timer && clearTimeout(this.timer);
+        this.timer1 && clearTimeout(this.timer1);
+
     }
     onbtnsPress(e,keyValue){
         let _data=this.state.data;
@@ -74,16 +79,6 @@ export default class HomeHeaderScreen extends React.Component {
             aaa.sbKind[4]=val;
             return aaa;
         });
-    }
-    _goToAuth(e){
-        this.setState({show:'flex'});
-        let _this=this;
-        setTimeout(function() {
-            _this.setState({show:'none'});
-        },1000);
-        setTimeout(function() {
-            _this.props.screenProps.dispatch(navigateAction2);
-        },510);
     }
     _renderRow(item){
         let imgURL0=item.item[2];
@@ -118,7 +113,7 @@ export default class HomeHeaderScreen extends React.Component {
             }
         }
         return(
-            <View pointerEvents='auto' style={{flex:1}}>
+            <View pointerEvents='auto' style={{position:'relative',backgroundColor:"rgba(0,0,0,0.5)"}}>
                 <View style={{height:height,position:'relative',justifyContent:'center'}}>
                     <Image style={styles.headerimg} source={require('../../image/shouye_header.png')}/>
                     <View style={styles.headertop}>
@@ -130,7 +125,7 @@ export default class HomeHeaderScreen extends React.Component {
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback
-                            onPress={e=>this._goToAuth(e)}
+                            onPress={e=>{this.props.screenProps.dispatch(navigateAction2)}}
                         >
                             <View style={[styles.headerLocalRight,{right:35}]}>
                                 <Image source={require('../../image/select.png')} style={styles.headericon}/>

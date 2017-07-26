@@ -13,6 +13,7 @@
     "react-native-flexi-radio-button": "^0.2.0",
     "react-native-image-crop-picker": "^0.13.1",
     "react-native-image-pan-zoom": "^2.0.4",
+    "react-native-image-zoom-viewer": "^2.0.7",
     "react-native-pull": "^2.0.2",
     "react-native-storage": "^0.2.1",
     "react-native-viewpager": "^0.2.13",

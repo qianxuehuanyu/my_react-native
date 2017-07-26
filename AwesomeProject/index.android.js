@@ -38,8 +38,7 @@ import TheWorksScreen from './js/Chat/ChatWorks'
 import TheAdvertisementScreen from './js/Chat/ChatAdvertisement'
 import ChatProjectPage from './js/Chat/ChatProjectPage'
 import ChatTipPage from './js/Chat/ChatTipPage'
-
-
+import Screen11 from './js/Home/11'
 class AwesomeProject extends React.Component{
     render(){
         return(
@@ -76,6 +75,7 @@ const App=StackNavigator({
     cChatAdvertisement:{screen:TheAdvertisementScreen},
     cChatTipPage:{screen:ChatTipPage},
     cChatProjectPage:{screen:ChatProjectPage},
+    testPage:{screen:Screen11}
 
 });
 
